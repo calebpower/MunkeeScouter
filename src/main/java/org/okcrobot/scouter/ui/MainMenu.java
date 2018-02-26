@@ -67,7 +67,7 @@ public class MainMenu extends JFrame {
    * Null constructor to construct the main menu.
    */
   public MainMenu() {
-    setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     setTitle("MunkeeScouter Main Menu");
     setSize(440, 500); //image is 440x440, extra height required for buttons
     setLocation(100, 100);
