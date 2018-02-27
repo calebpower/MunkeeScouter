@@ -1,13 +1,14 @@
 package org.okcrobot.scouter.ui.component;
 
-import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-public class CheckboxPanel extends JPanel {
+import org.okcrobot.scouter.ui.Selectable;
+
+public class CheckboxPanel extends JPanel implements Selectable {
   private JLabel label = null;
   private JCheckBox checkbox = null;
   
@@ -22,7 +23,11 @@ public class CheckboxPanel extends JPanel {
     add(checkbox, constraints.setGridX(4).setGridWidth(1));
   }
   
-  public boolean getValue() {
-    return checkbox.isSelected();
+  public int getValue() {
+    return checkbox.isSelected() ? 1 : 0;
+  }
+
+  @Override public void setSelected(boolean selected) {
+    // TODO Auto-generated method stub
   }
 }

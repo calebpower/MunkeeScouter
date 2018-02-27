@@ -9,7 +9,9 @@ import javax.swing.JSpinner;
 import javax.swing.JSpinner.DefaultEditor;
 import javax.swing.SpinnerNumberModel;
 
-public class NumberSpinnerPanel extends JPanel {
+import org.okcrobot.scouter.ui.Selectable;
+
+public class NumberSpinnerPanel extends JPanel implements Selectable {
   private JLabel label = null;
   private JSpinner spinner = null;
   private SpinnerNumberModel spinnerModel = null;
@@ -26,10 +28,15 @@ public class NumberSpinnerPanel extends JPanel {
     add(spinner, constraints.setGridX(4).setGridWidth(1));
   }
   
-  public int getValue() {
+  @Override public int getValue() {
     try {
       return ((Integer)spinnerModel.getValue()).intValue();
     } catch(ClassCastException e) { }
     return 0;
+  }
+
+  @Override public void setSelected(boolean selected) {
+    // TODO Auto-generated method stub
+    
   }
 }

@@ -10,6 +10,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JRootPane;
 
+import org.okcrobot.scouter.model.RobotAction;
 import org.okcrobot.scouter.model.timer.GamePhase;
 import org.okcrobot.scouter.ui.component.CheckboxPanel;
 import org.okcrobot.scouter.ui.component.DynamicGridBagConstraints;
@@ -19,7 +20,7 @@ import org.okcrobot.scouter.ui.component.OptionGroup;
 public class MatchWindow extends JFrame {
   
   private JPanel centerPanel = null;
-  private Map<Component, GamePhase> options = null;
+  //private Map<Component, GamePhase> options = null;
   private OptionGroup autonomousOptionGroup = null;
   private OptionGroup teleopOptionGroup = null;
   private OptionGroup endgameOptionGroup = null;
@@ -32,39 +33,21 @@ public class MatchWindow extends JFrame {
     setResizable(false);
     setUndecorated(true);
     getRootPane().setWindowDecorationStyle(JRootPane.NONE);
-    
-    options = new LinkedHashMap<Component, GamePhase>() {{
-      put(new CheckboxPanel("Didn't move", false), GamePhase.AUTONOMOUS);
-      put(new NumberSpinnerPanel("Crossed the line", 0, null), GamePhase.AUTONOMOUS);
-      put(new NumberSpinnerPanel("Scored on the correct switch", 0, null), GamePhase.AUTONOMOUS);
-      put(new NumberSpinnerPanel("Scored on the correct scale", 0, null), GamePhase.AUTONOMOUS);
-      put(new NumberSpinnerPanel("Scored on the wrong switch", 0, null), GamePhase.AUTONOMOUS);
-      put(new NumberSpinnerPanel("Scored on the wrong scale", 0, null), GamePhase.AUTONOMOUS);
-      put(new CheckboxPanel("Didn't move", false), GamePhase.TELE_OP);
-      put(new NumberSpinnerPanel("Picked up a cube", 0, null), GamePhase.TELE_OP);
-      put(new NumberSpinnerPanel("Scored cube on own switch", 0, null), GamePhase.TELE_OP);
-      put(new NumberSpinnerPanel("Put cube on scale", 0, null), GamePhase.TELE_OP);
-      put(new NumberSpinnerPanel("Put cube on wrong switch", 0, null), GamePhase.TELE_OP);
-      put(new NumberSpinnerPanel("Put cube in exchange", 0, null), GamePhase.TELE_OP);
-      put(new CheckboxPanel("Made it onto platform", false), GamePhase.END_GAME);
-      put(new CheckboxPanel("Climbed", false), GamePhase.END_GAME);
-      put(new NumberSpinnerPanel("Helped partner climb", 0, 2), GamePhase.END_GAME);
-    }};
-    
+
     autonomousOptionGroup = new OptionGroup("Autonomous");
     teleopOptionGroup = new OptionGroup("Tele-Op");
     endgameOptionGroup = new OptionGroup("End Game");
     
-    for(Component component : options.keySet()) {
-      switch(options.get(component)) {
+    for(RobotAction action : RobotAction.values()) {
+      switch(action.getPhase()) {
       case AUTONOMOUS:
-        autonomousOptionGroup.add(component);
+        autonomousOptionGroup.add(action.getComponent());
         break;
       case TELE_OP:
-        teleopOptionGroup.add(component);
+        teleopOptionGroup.add(action.getComponent());
         break;
       case END_GAME:
-        endgameOptionGroup.add(component);
+        endgameOptionGroup.add(action.getComponent());
       }
     }
     
