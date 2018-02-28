@@ -1,7 +1,6 @@
 package org.okcrobot.scouter.ui;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
@@ -13,6 +12,8 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JRootPane;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 import org.okcrobot.scouter.model.RobotAction;
@@ -20,6 +21,7 @@ import org.okcrobot.scouter.model.timer.GamePhase;
 import org.okcrobot.scouter.ui.component.BorderedPanel;
 import org.okcrobot.scouter.ui.component.DynamicGridBagConstraints;
 import org.okcrobot.scouter.ui.component.HelpfulTextbox;
+import org.okcrobot.scouter.ui.component.NumberSpinnerPanel;
 import org.okcrobot.scouter.ui.component.OptionGroup;
 
 public class MatchWindow extends JFrame {
@@ -34,13 +36,15 @@ public class MatchWindow extends JFrame {
   private JPanel northPanel = null;
   private JPanel centerPanel = null;
   private JPanel southPanel = null;
+  private JTextArea commentArea = null;
   private Map<GamePhase, OptionGroup> optionGroups = null;
+  private NumberSpinnerPanel totalAllianceSpinner = null;
   
   public MatchWindow() {
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     setTitle("MunkeeScouter Match Window");
-    setSize(700, 700);
-    setLocation(100, 100);
+    setSize(700, 425);
+    setLocation(75, 75);
     setResizable(false);
     setUndecorated(true);
     getRootPane().setWindowDecorationStyle(JRootPane.NONE);
@@ -96,15 +100,31 @@ public class MatchWindow extends JFrame {
     for(RobotAction action : RobotAction.values()) 
       optionGroups.get(action.getPhase()).add(action.getComponent());
     
-    int maxComponentCount = 0;
-    for(OptionGroup optionGroup : optionGroups.values()) {
-      int count = optionGroup.getComponentCount();
-      if(maxComponentCount < count) maxComponentCount = count;
+    for(OptionGroup optionGroup : optionGroups.values())
       optionGroup.pad();
-    }
+    
+    southPanel = new JPanel();
+    southPanel.setLayout(new GridBagLayout());
+    commentArea = new JTextArea(5, 20);
+    commentArea.setLineWrap(true);
+    BorderedPanel commentPanel = new BorderedPanel("Additional Comments");
+    commentPanel.setLayout(new GridBagLayout());
+    constraints = new DynamicGridBagConstraints()
+        .setFill(GridBagConstraints.BOTH)
+        .setWeightX(1)
+        .setWeightY(0);
+    commentPanel.add(new JScrollPane(commentArea), constraints);
+    saveButton = new JButton("SAVE");
+    totalAllianceSpinner = new NumberSpinnerPanel("Total Alliance Points", 0, null);
+    BorderedPanel totalAlliancePanel = new BorderedPanel();
+    totalAlliancePanel.add(totalAllianceSpinner);
+    southPanel.add(commentPanel, constraints);
+    southPanel.add(totalAlliancePanel, constraints.increaseGridY());
+    southPanel.add(saveButton, constraints.increaseGridX().setGridY(0).setGridHeight(2));
     
     getContentPane().add(northPanel, BorderLayout.NORTH);
     getContentPane().add(centerPanel, BorderLayout.CENTER);
+    getContentPane().add(southPanel, BorderLayout.SOUTH);
   }
   
   public void display() {
