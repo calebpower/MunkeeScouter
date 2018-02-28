@@ -3,9 +3,11 @@ package org.okcrobot.scouter.ui.component;
 import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.util.List;
 
 import javax.swing.BorderFactory;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.TitledBorder;
 
@@ -19,6 +21,9 @@ public class OptionGroup extends JPanel {
     setBorder(titledBorder);
     setLayout(new GridBagLayout());
     constraints = new DynamicGridBagConstraints()
+        .setWeightX(0)
+        .setWeightY(0)
+        .setInsets(new Insets(0, 0, 10, 0))
         .setFill(GridBagConstraints.HORIZONTAL);
   }
   
@@ -31,6 +36,11 @@ public class OptionGroup extends JPanel {
     for(Component component : components)
       add(component);
     return components;
+  }
+  
+  public void pad() {
+    constraints.setWeightY(1);
+    add(new JLabel());
   }
   
 }

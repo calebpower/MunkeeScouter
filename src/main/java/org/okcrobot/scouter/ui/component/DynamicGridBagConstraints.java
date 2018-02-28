@@ -131,7 +131,7 @@ public class DynamicGridBagConstraints extends GridBagConstraints {
    * @param weightx the new weightx value as specified by {@link GridBagConstraints#weightx}
    * @return this DynamicGridBagConstraints object
    */
-  public DynamicGridBagConstraints setWeightX(int weightx) {
+  public DynamicGridBagConstraints setWeightX(double weightx) {
     this.weightx = weightx;
     return this;
   }
@@ -141,7 +141,7 @@ public class DynamicGridBagConstraints extends GridBagConstraints {
    * @param weighty the new weighty value as specified by {@link GridBagConstraints#weighty}
    * @return this DynamicGridBagConstraints object
    */
-  public DynamicGridBagConstraints setWeightY(int weighty) {
+  public DynamicGridBagConstraints setWeightY(double weighty) {
     this.weighty = weighty;
     return this;
   }

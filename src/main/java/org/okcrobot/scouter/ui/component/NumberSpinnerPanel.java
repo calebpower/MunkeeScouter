@@ -1,8 +1,9 @@
 package org.okcrobot.scouter.ui.component;
 
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
+import java.awt.Dimension;
 
+import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
@@ -20,12 +21,15 @@ public class NumberSpinnerPanel extends JPanel implements Selectable {
     label = new JLabel(text);
     spinnerModel = new SpinnerNumberModel(0, min, max, 1);
     spinner = new JSpinner(spinnerModel);
+    spinner.setMaximumSize(new Dimension(20, 20));
+    spinner.setMinimumSize(new Dimension(10, 20));
     ((DefaultEditor)spinner.getEditor()).getTextField().setEditable(false);
     
-    setLayout(new GridBagLayout());
-    DynamicGridBagConstraints constraints = new DynamicGridBagConstraints().setGridWidth(4);
-    add(label, constraints);
-    add(spinner, constraints.setGridX(4).setGridWidth(1));
+    setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
+    add(label);
+    add(Box.createHorizontalGlue());
+    add(Box.createRigidArea(new Dimension(10, 0)));
+    add(spinner);
   }
   
   @Override public int getValue() {

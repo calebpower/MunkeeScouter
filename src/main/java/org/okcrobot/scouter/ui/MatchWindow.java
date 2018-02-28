@@ -2,11 +2,14 @@ package org.okcrobot.scouter.ui;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.GridBagLayout;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -52,12 +55,7 @@ public class MatchWindow extends JFrame {
     for(OptionGroup optionGroup : optionGroups.values()) {
       int count = optionGroup.getComponentCount();
       if(maxComponentCount < count) maxComponentCount = count;
-    }
-    
-    for(OptionGroup optionGroup : optionGroups.values()) {
-      for(int i = optionGroup.getComponentCount(); i <= maxComponentCount; i++) {
-        optionGroup.add(new JLabel());
-      }
+      optionGroup.pad();
     }
     
     getContentPane().add(centerPanel, BorderLayout.CENTER);

@@ -1,7 +1,10 @@
 package org.okcrobot.scouter.ui.component;
 
+import java.awt.Dimension;
 import java.awt.GridBagLayout;
 
+import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -16,11 +19,14 @@ public class CheckboxPanel extends JPanel implements Selectable {
     label = new JLabel(text);
     checkbox = new JCheckBox();
     checkbox.setSelected(selected);
+    checkbox.setMaximumSize(new Dimension(20, 20));
+    checkbox.setMinimumSize(new Dimension(10, 20));
     
-    setLayout(new GridBagLayout());
-    DynamicGridBagConstraints constraints = new DynamicGridBagConstraints().setGridWidth(4);
-    add(label, constraints);
-    add(checkbox, constraints.setGridX(4).setGridWidth(1));
+    setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
+    add(label);
+    add(Box.createHorizontalGlue());
+    add(Box.createRigidArea(new Dimension(10, 0)));
+    add(checkbox);
   }
   
   public int getValue() {
