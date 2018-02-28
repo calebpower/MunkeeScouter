@@ -82,6 +82,26 @@ public class DynamicGridBagConstraints extends GridBagConstraints {
   }
   
   /**
+   * Increases the gridx value by one.
+   * 
+   * @return this DynamicGridBagConstraints object
+   */
+  public DynamicGridBagConstraints increaseGridX() {
+    ++gridx;
+    return this;
+  }
+  
+  /**
+   * Decreases the gridx value by one.
+   * 
+   * @return this DynamicGridBagConstraints object
+   */
+  public DynamicGridBagConstraints decreaseGridX() {
+    --gridx;
+    return this;
+  }
+  
+  /**
    * Sets the cell at the top of the component's display area.
    * 
    * @param gridy the new gridy value as specified by {@link GridBagConstraints#gridy}
@@ -89,6 +109,26 @@ public class DynamicGridBagConstraints extends GridBagConstraints {
    */
   public DynamicGridBagConstraints setGridY(int gridy) {
     this.gridy = gridy;
+    return this;
+  }
+  
+  /**
+   * Increases the gridy value by one.
+   * 
+   * @return this DynamicGridBagConstraints object
+   */
+  public DynamicGridBagConstraints increaseGridY() {
+    ++gridy;
+    return this;
+  }
+  
+  /**
+   * Decreases the gridy value by one.
+   * 
+   * @return this DynamicGridBagConstraints object
+   */
+  public DynamicGridBagConstraints decreaseGridY() {
+    --gridy;
     return this;
   }
   

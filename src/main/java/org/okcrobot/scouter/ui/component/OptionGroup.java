@@ -11,14 +11,12 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.TitledBorder;
 
-public class OptionGroup extends JPanel {
+public class OptionGroup extends BorderedPanel {
   
   private DynamicGridBagConstraints constraints = null;
   
   public OptionGroup(String title) {
-    TitledBorder titledBorder = BorderFactory.createTitledBorder(title);
-    titledBorder.setTitleJustification(TitledBorder.CENTER);
-    setBorder(titledBorder);
+    super(title);
     setLayout(new GridBagLayout());
     constraints = new DynamicGridBagConstraints()
         .setWeightX(0)
