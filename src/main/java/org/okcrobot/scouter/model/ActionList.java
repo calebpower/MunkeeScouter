@@ -39,4 +39,16 @@ public class ActionList {
     return true;
   }
   
+  public void add(RobotAction action) {
+    actions.add(action);
+  }
+  
+  public boolean remove(int i) {
+    if(actions.size() <= i) return false;
+    actions.remove(i);
+    if(current >= actions.size())
+      current = actions.size() - 1;
+    return true;
+  }
+  
 }

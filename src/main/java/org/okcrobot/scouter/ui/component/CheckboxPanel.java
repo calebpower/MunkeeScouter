@@ -1,7 +1,9 @@
 package org.okcrobot.scouter.ui.component;
 
+import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -9,11 +11,13 @@ import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import org.okcrobot.scouter.ui.OptionListener;
 import org.okcrobot.scouter.ui.Selectable;
 
 public class CheckboxPanel extends JPanel implements Selectable {
   private JLabel label = null;
   private JCheckBox checkbox = null;
+  private OptionListener listener = null;
   
   public CheckboxPanel(String text, boolean selected) {
     label = new JLabel(text);
@@ -27,13 +31,28 @@ public class CheckboxPanel extends JPanel implements Selectable {
     add(Box.createHorizontalGlue());
     add(Box.createRigidArea(new Dimension(10, 0)));
     add(checkbox);
+    
+    checkbox.addActionListener(new ActionListener() {
+      @Override public void actionPerformed(ActionEvent event) {
+        System.out.println("Checkbox changed: " + checkbox.isSelected());
+        if(listener != null) listener.onOptionUpdate((Component)event.getSource());
+      }
+    });
   }
   
-  public int getValue() {
+  @Override public boolean equals(Component component) {
+    return checkbox == component;
+  }
+  
+  @Override public int getValue() {
     return checkbox.isSelected() ? 1 : 0;
   }
 
   @Override public void setSelected(boolean selected) {
     // TODO Auto-generated method stub
+  }
+
+  @Override public void setListener(OptionListener listener) {
+    this.listener = listener;
   }
 }

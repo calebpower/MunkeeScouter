@@ -4,6 +4,7 @@ import java.awt.Component;
 import java.sql.Timestamp;
 
 import org.okcrobot.scouter.model.timer.GamePhase;
+import org.okcrobot.scouter.ui.OptionListener;
 import org.okcrobot.scouter.ui.Selectable;
 import org.okcrobot.scouter.ui.component.CheckboxPanel;
 import org.okcrobot.scouter.ui.component.NumberSpinnerPanel;
@@ -75,11 +76,24 @@ public enum RobotAction {
     return timestamp;
   }
   
+  public void setTimestamp(Timestamp timestamp) {
+    this.timestamp = timestamp;
+  }
+  
+  public Selectable getSelectable() {
+    return component;
+  }
+  
   public Component getComponent() {
     try {
       return (Component)component;
     } catch(ClassCastException e) { }
     
     return null;
+  }
+  
+  public Component getComponent(OptionListener listener) {
+    component.setListener(listener);
+    return getComponent();
   }
 }

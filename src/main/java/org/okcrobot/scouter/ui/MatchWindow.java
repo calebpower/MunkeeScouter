@@ -1,6 +1,7 @@
 package org.okcrobot.scouter.ui;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
@@ -24,7 +25,7 @@ import org.okcrobot.scouter.ui.component.HelpfulTextbox;
 import org.okcrobot.scouter.ui.component.NumberSpinnerPanel;
 import org.okcrobot.scouter.ui.component.OptionGroup;
 
-public class MatchWindow extends JFrame {
+public class MatchWindow extends JFrame implements OptionListener {
   
   private HelpfulTextbox teamNumberTextbox = null;
   private HelpfulTextbox matchNumberTextbox = null;
@@ -98,7 +99,7 @@ public class MatchWindow extends JFrame {
     }
     
     for(RobotAction action : RobotAction.values()) 
-      optionGroups.get(action.getPhase()).add(action.getComponent());
+      optionGroups.get(action.getPhase()).add(action.getComponent(this));
     
     for(OptionGroup optionGroup : optionGroups.values())
       optionGroup.pad();
@@ -130,6 +131,14 @@ public class MatchWindow extends JFrame {
   public void display() {
     setVisible(true);
     requestFocusInWindow();
+  }
+
+  @Override public void onOptionUpdate(Component selectable) {
+    for(RobotAction action : RobotAction.values())
+      if(action.getSelectable().equals(selectable)) {
+        System.out.println("New value = " + action.getSelectable().getValue());
+        break;
+      }
   }
   
 }
