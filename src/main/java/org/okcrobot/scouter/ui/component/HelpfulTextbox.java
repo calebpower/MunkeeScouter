@@ -13,6 +13,7 @@ public class HelpfulTextbox extends JTextField {
   public HelpfulTextbox(final String hint) {
     value = new String();
     setText(hint);
+    setHorizontalAlignment(JTextField.CENTER);
     
     addFocusListener(new FocusListener() {
 

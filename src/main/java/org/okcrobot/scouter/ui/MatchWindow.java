@@ -1,6 +1,7 @@
 package org.okcrobot.scouter.ui;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
@@ -68,8 +69,12 @@ public class MatchWindow extends JFrame {
     northPanel.add(matchInfoPanel);
     matchInfoPanel.setLayout(new GridBagLayout());
     timeTextField = new JTextField("MM:SS");
+    timeTextField.setEditable(false);
+    timeTextField.setHorizontalAlignment(JTextField.CENTER);
     matchInfoPanel.add(timeTextField, constraints.setGridX(0).setGridY(0).setGridWidth(3));
     phaseTextField = new JTextField("PHASE");
+    phaseTextField.setEditable(false);
+    phaseTextField.setHorizontalAlignment(JTextField.CENTER);
     matchInfoPanel.add(phaseTextField, constraints.shiftGridX(3).setGridWidth(1));
     resetButton = new JButton("RESET");
     matchInfoPanel.add(resetButton, constraints.setGridX(0).setGridY(1).setGridWidth(2));
