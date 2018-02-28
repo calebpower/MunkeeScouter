@@ -87,8 +87,7 @@ public class DynamicGridBagConstraints extends GridBagConstraints {
    * @return this DynamicGridBagConstraints object
    */
   public DynamicGridBagConstraints increaseGridX() {
-    ++gridx;
-    return this;
+    return shiftGridX(1);
   }
   
   /**
@@ -97,7 +96,17 @@ public class DynamicGridBagConstraints extends GridBagConstraints {
    * @return this DynamicGridBagConstraints object
    */
   public DynamicGridBagConstraints decreaseGridX() {
-    --gridx;
+    return shiftGridX(-1);
+  }
+  
+  /**
+   * Shifts gridx by the given value.
+   * 
+   * @param x the amount for which to shift gridx
+   * @return this DynamicGridBagConstraints object
+   */
+  public DynamicGridBagConstraints shiftGridX(int x) {
+    gridx += x;
     return this;
   }
   
@@ -118,8 +127,7 @@ public class DynamicGridBagConstraints extends GridBagConstraints {
    * @return this DynamicGridBagConstraints object
    */
   public DynamicGridBagConstraints increaseGridY() {
-    ++gridy;
-    return this;
+    return shiftGridY(1);
   }
   
   /**
@@ -128,7 +136,17 @@ public class DynamicGridBagConstraints extends GridBagConstraints {
    * @return this DynamicGridBagConstraints object
    */
   public DynamicGridBagConstraints decreaseGridY() {
-    --gridy;
+    return shiftGridY(-1);
+  }
+  
+  /**
+   * Shifts gridy by the given value.
+   * 
+   * @param y the amount for which to shift gridy
+   * @return this DynamicGridBagConstraints object
+   */
+  public DynamicGridBagConstraints shiftGridY(int y) {
+    gridy += y;
     return this;
   }
   
