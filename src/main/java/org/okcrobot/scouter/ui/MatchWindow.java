@@ -2,11 +2,14 @@ package org.okcrobot.scouter.ui;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Container;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.swing.JButton;
@@ -24,11 +27,14 @@ import org.okcrobot.scouter.ui.component.DynamicGridBagConstraints;
 import org.okcrobot.scouter.ui.component.HelpfulTextbox;
 import org.okcrobot.scouter.ui.component.NumberSpinnerPanel;
 import org.okcrobot.scouter.ui.component.OptionGroup;
+import org.okcrobot.scouter.ui.keyboard.KeyListener;
+import org.okcrobot.scouter.ui.keyboard.KeyMonitor;
 
-public class MatchWindow extends JFrame implements OptionListener {
+public class MatchWindow extends JFrame implements KeyListener, OptionListener {
   
   private HelpfulTextbox teamNumberTextbox = null;
   private HelpfulTextbox matchNumberTextbox = null;
+  private JButton exitButton = null;
   private JButton resetButton = null;
   private JButton startButton = null;
   private JButton saveButton = null;
@@ -38,6 +44,7 @@ public class MatchWindow extends JFrame implements OptionListener {
   private JPanel centerPanel = null;
   private JPanel southPanel = null;
   private JTextArea commentArea = null;
+  private KeyMonitor keyMonitor = null;
   private Map<GamePhase, OptionGroup> optionGroups = null;
   private NumberSpinnerPanel totalAllianceSpinner = null;
   
@@ -115,21 +122,31 @@ public class MatchWindow extends JFrame implements OptionListener {
         .setWeightX(1)
         .setWeightY(0);
     commentPanel.add(new JScrollPane(commentArea), constraints);
+    exitButton = new JButton("EXIT");
     saveButton = new JButton("SAVE");
     totalAllianceSpinner = new NumberSpinnerPanel("Total Alliance Points", 0, null);
     BorderedPanel totalAlliancePanel = new BorderedPanel();
     totalAlliancePanel.add(totalAllianceSpinner);
     southPanel.add(commentPanel, constraints);
     southPanel.add(totalAlliancePanel, constraints.increaseGridY());
-    southPanel.add(saveButton, constraints.increaseGridX().setGridY(0).setGridHeight(2));
+    southPanel.add(exitButton, constraints.increaseGridX().setGridY(0).setGridHeight(2));
+    southPanel.add(saveButton, constraints.increaseGridX());
     
     getContentPane().add(northPanel, BorderLayout.NORTH);
     getContentPane().add(centerPanel, BorderLayout.CENTER);
     getContentPane().add(southPanel, BorderLayout.SOUTH);
+    
+    keyMonitor = new KeyMonitor().register(this);
+    addKeyListener(keyMonitor);
+    for(Component component : getAllComponents(this)) {
+      System.out.println("!: " + component.getName());
+      component.addKeyListener(keyMonitor);
+    }
   }
   
   public void display() {
     setVisible(true);
+    setFocusable(true);
     requestFocusInWindow();
   }
 
@@ -139,6 +156,21 @@ public class MatchWindow extends JFrame implements OptionListener {
         System.out.println("New value = " + action.getSelectable().getValue());
         break;
       }
+  }
+
+  @Override public void onKeyPress(char c) {
+    System.out.println("Key pressed: " + c);
+  }
+  
+  private List<Component> getAllComponents(final Container c) {
+    Component[] components = c.getComponents();
+    List<Component> componentList = new ArrayList<>();
+    for(Component component : components) {
+      componentList.add(component);
+      if(component instanceof Container)
+        componentList.addAll(getAllComponents((Container)component));
+    }
+    return componentList;
   }
   
 }
