@@ -5,7 +5,7 @@ import java.util.List;
 
 public class ActionList {
   
-  int current = 0;
+  int current = -1;
   private List<RobotAction> actions = null;
   
   public ActionList() {
@@ -30,12 +30,14 @@ public class ActionList {
   public boolean next() {
     if(current >= actions.size() - 1) return false;
     current++;
+    nudge();
     return true;
   }
   
   public boolean prev() {
     if(current == 0) return false;
     current--;
+    nudge();
     return true;
   }
   
@@ -47,8 +49,18 @@ public class ActionList {
     if(actions.size() <= i) return false;
     actions.remove(i);
     if(current >= actions.size())
-      current = actions.size() - 1;
+      current = -1;
+    nudge();
     return true;
+  }
+  
+  private void nudge() {
+    for(int i = 0; i < actions.size(); i++)
+      actions.get(i).getSelectable().setSelected(current == i);
+  }
+  
+  public List<RobotAction> list() {
+    return actions;
   }
   
 }

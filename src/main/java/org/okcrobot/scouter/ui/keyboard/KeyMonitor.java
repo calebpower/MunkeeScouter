@@ -15,7 +15,7 @@ public class KeyMonitor extends KeyAdapter {
   
   @Override public void keyPressed(KeyEvent event) {
     for(KeyListener listener : listeners)
-      listener.onKeyPress(event.getKeyChar());
+      listener.onKeyPress(event.getKeyCode());
   }
   
   public KeyMonitor register(KeyListener listener) {

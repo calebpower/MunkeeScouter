@@ -1,5 +1,6 @@
 package org.okcrobot.scouter.ui.component;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -49,10 +50,22 @@ public class CheckboxPanel extends JPanel implements Selectable {
   }
 
   @Override public void setSelected(boolean selected) {
-    // TODO Auto-generated method stub
+    label.setForeground(selected ? Color.GREEN : Color.BLACK);
   }
 
   @Override public void setListener(OptionListener listener) {
     this.listener = listener;
+  }
+
+  @Override public void onKeyUp() {
+    checkbox.setSelected(true);
+    System.out.println("Checkbox changed: " + checkbox.isSelected());
+    if(listener != null) listener.onOptionUpdate(this);
+  }
+
+  @Override public void onKeyDown() {
+    checkbox.setSelected(false);
+    System.out.println("Checkbox changed: " + checkbox.isSelected());
+    if(listener != null) listener.onOptionUpdate(this); 
   }
 }

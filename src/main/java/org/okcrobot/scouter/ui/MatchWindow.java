@@ -7,6 +7,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -20,6 +21,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
+import org.okcrobot.scouter.model.ActionList;
 import org.okcrobot.scouter.model.RobotAction;
 import org.okcrobot.scouter.model.timer.GamePhase;
 import org.okcrobot.scouter.ui.component.BorderedPanel;
@@ -32,6 +34,7 @@ import org.okcrobot.scouter.ui.keyboard.KeyMonitor;
 
 public class MatchWindow extends JFrame implements KeyListener, OptionListener {
   
+  private ActionList actionList = null;
   private HelpfulTextbox teamNumberTextbox = null;
   private HelpfulTextbox matchNumberTextbox = null;
   private JButton exitButton = null;
@@ -105,7 +108,9 @@ public class MatchWindow extends JFrame implements KeyListener, OptionListener {
       constraints.increaseGridX();
     }
     
-    for(RobotAction action : RobotAction.values()) 
+    actionList = new ActionList(RobotAction.values());
+    
+    for(RobotAction action : actionList.list())
       optionGroups.get(action.getPhase()).add(action.getComponent(this));
     
     for(OptionGroup optionGroup : optionGroups.values())
@@ -158,8 +163,20 @@ public class MatchWindow extends JFrame implements KeyListener, OptionListener {
       }
   }
 
-  @Override public void onKeyPress(char c) {
-    System.out.println("Key pressed: " + c);
+  @Override public void onKeyPress(int key) {
+    switch(key) {
+    case KeyEvent.VK_LEFT:
+      actionList.prev();
+      break;
+    case KeyEvent.VK_RIGHT:
+      actionList.next();
+      break;
+    case KeyEvent.VK_UP:
+      actionList.get().getSelectable().onKeyUp();
+      break;
+    case KeyEvent.VK_DOWN:
+      actionList.get().getSelectable().onKeyDown();
+    }
   }
   
   private List<Component> getAllComponents(final Container c) {

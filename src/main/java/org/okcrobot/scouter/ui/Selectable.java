@@ -7,7 +7,8 @@ public interface Selectable {
   public boolean equals(Component component);
   public int getValue();
   public void setSelected(boolean selected);
-  public void setEnabled(boolean enabled);
+  public void onKeyUp();
+  public void onKeyDown();
   public void setListener(OptionListener listener);
   
 }

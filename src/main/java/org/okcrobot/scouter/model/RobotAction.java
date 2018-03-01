@@ -54,7 +54,7 @@ public enum RobotAction {
     component = new CheckboxPanel(text, selected);
   }
   
-  private RobotAction(String text, Comparable<?> min, Comparable<?> max) {
+  private RobotAction(String text, Comparable<Integer> min, Comparable<Integer> max) {
     this(text);
     component = new NumberSpinnerPanel(text, min, max);
   }

@@ -1,5 +1,6 @@
 package org.okcrobot.scouter.ui.component;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 
@@ -22,7 +23,7 @@ public class NumberSpinnerPanel extends JPanel implements Selectable {
   private OptionListener listener = null;
   private SpinnerNumberModel spinnerModel = null;
   
-  public NumberSpinnerPanel(String text, Comparable min, Comparable max) {
+  public NumberSpinnerPanel(String text, Comparable<Integer> min, Comparable<Integer> max) {
     label = new JLabel(text);
     spinnerModel = new SpinnerNumberModel(0, min, max, 1);
     spinner = new JSpinner(spinnerModel);
@@ -44,7 +45,7 @@ public class NumberSpinnerPanel extends JPanel implements Selectable {
     });
   }
   
-  public NumberSpinnerPanel(String text, Comparable min, Comparable max, OptionListener listener) {
+  public NumberSpinnerPanel(String text, Comparable<Integer> min, Comparable<Integer> max, OptionListener listener) {
     this(text, min, max);
     this.listener = listener;
   }
@@ -61,12 +62,29 @@ public class NumberSpinnerPanel extends JPanel implements Selectable {
   }
 
   @Override public void setSelected(boolean selected) {
-    // TODO Auto-generated method stub
-    
+    label.setForeground(selected ? Color.GREEN : Color.BLACK);
   }
 
   @Override public void setListener(OptionListener listener) {
     this.listener = listener;
+  }
+
+  @Override public void onKeyUp() {
+    Integer newValue = (Integer)spinner.getValue() + 1;
+    Comparable<Integer> upperBound = spinnerModel.getMaximum();
+    if(upperBound != null && upperBound.compareTo(newValue) > 0) return;
+    spinner.setValue(newValue);
+    System.out.println("Checkbox changed: " + spinner.getValue());
+    if(listener != null) listener.onOptionUpdate(this);
+  }
+
+  @Override public void onKeyDown() {
+    Integer newValue = (Integer)spinner.getValue() - 1;
+    Comparable<Integer> lowerBound = spinnerModel.getMinimum();
+    if(lowerBound != null && lowerBound.compareTo(newValue) < 0) return;
+    spinner.setValue(newValue);
+    System.out.println("Checkbox changed: " + spinner.getValue());
+    if(listener != null) listener.onOptionUpdate(this);
   }
   
 }
