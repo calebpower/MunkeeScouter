@@ -13,6 +13,7 @@ import javax.swing.JTextField;
 public class HelpfulTextbox extends JTextField {
   private static final long serialVersionUID = 2473111271481610690L;
   
+  private String hint = null;
   private String value = null;
   
   /**
@@ -21,6 +22,7 @@ public class HelpfulTextbox extends JTextField {
    * @param hint the hint to be shown on empty textboxes
    */
   public HelpfulTextbox(final String hint) {
+    this.hint = hint;
     value = new String();
     setText(hint);
     setHorizontalAlignment(JTextField.CENTER);
@@ -49,4 +51,15 @@ public class HelpfulTextbox extends JTextField {
     return value;
   }
   
+  /**
+   * Sets the true value of the textbox.
+   * 
+   * @param value the textbox value
+   * @return this HelpfulTextbox object
+   */
+  public HelpfulTextbox setValue(String value) {
+    if(value == null) value = "";
+    setText(value == null ? hint : value);
+    return this;
+  }
 }

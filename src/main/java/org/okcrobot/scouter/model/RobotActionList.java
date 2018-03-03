@@ -1,6 +1,5 @@
 package org.okcrobot.scouter.model;
 
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,7 +14,7 @@ public class RobotActionList {
   boolean enabled = true;
   int current = -1;
   private List<RobotAction> actions = null;
-  private List<Timestamp> times = null;
+  private List<Long> times = null;
   
   /**
    * Null constructor.
@@ -91,10 +90,25 @@ public class RobotActionList {
   /**
    * Retrieves the time that the current robot action occurred.
    * 
-   * @return SQL time stamp at which the current action took place
+   * @return timestamp at which the current action took place
    */
-  public Timestamp getTime() {
+  public long getTime() {
     return times.get(current); 
+  }
+  
+  /**
+   * Moves the cursor to the specified index, provided that the requested cursor
+   * is in bounds. If the requested cursor position is out of bounds, then the
+   * current cursor remains unchanged.
+   * 
+   * @param i the new index
+   * @return <code>true</code> if the new index is in bounds or
+   *         <code>false</code> if the new index is out of bounds
+   */
+  public boolean setCursor(int i) {
+    if(i < 0 || i >= actions.size()) return false;
+    current = i;
+    return true;
   }
   
   /**
@@ -157,7 +171,7 @@ public class RobotActionList {
    * @param action the action performed by the robot
    * @param timestamp the time at which the action was executed
    */
-  public void add(RobotAction action, Timestamp timestamp) {
+  public void add(RobotAction action, long timestamp) {
     actions.add(action);
     times.add(timestamp);
   }
@@ -206,6 +220,15 @@ public class RobotActionList {
    */
   public boolean isEnabled() {
     return enabled;
+  }
+  
+  /**
+   * Retrieves the number of elements in the list.
+   * 
+   * @return integer representation of the size of the list
+   */
+  public int size() {
+    return actions.size();
   }
   
 }

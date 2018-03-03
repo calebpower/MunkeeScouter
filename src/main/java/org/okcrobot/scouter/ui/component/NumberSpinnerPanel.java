@@ -24,6 +24,8 @@ import org.okcrobot.scouter.ui.OptionListener;
 public class NumberSpinnerPanel extends JPanel implements Selectable {
   private static final long serialVersionUID = 950645593888496942L;
   
+  private Component me = null;
+  private int previousValue = -1;
   private JLabel label = null;
   private JSpinner spinner = null;
   private OptionListener listener = null;
@@ -52,7 +54,10 @@ public class NumberSpinnerPanel extends JPanel implements Selectable {
     
     spinner.addChangeListener(new ChangeListener() {
       @Override public void stateChanged(ChangeEvent event) {
-        if(listener != null) listener.onOptionUpdate((Component)event.getSource());
+        Integer newValue = (Integer)spinner.getValue();
+        if(newValue.compareTo(previousValue) > 0 &&
+            listener != null && me != null) listener.onOptionUpdate(me);
+        previousValue = newValue;
       }
     });
   }
@@ -75,6 +80,17 @@ public class NumberSpinnerPanel extends JPanel implements Selectable {
   }
   
   /**
+   * Sets the value of the spinner.
+   * 
+   * @param value the new value
+   * @return this NumberSpinnerPanel object
+   */
+  public NumberSpinnerPanel setValue(int value) {
+    spinner.setValue(value);
+    return this;
+  }
+  
+  /**
    * {@inheritDoc}
    */
   @Override public void setSelected(boolean selected) {
@@ -85,6 +101,7 @@ public class NumberSpinnerPanel extends JPanel implements Selectable {
    * {@inheritDoc}
    */
   @Override public void setListener(OptionListener listener) {
+    if(me == null) me = this;
     this.listener = listener;
   }
   
@@ -96,6 +113,7 @@ public class NumberSpinnerPanel extends JPanel implements Selectable {
     @SuppressWarnings("unchecked") Comparable<Integer> upperBound = spinnerModel.getMaximum();
     if(upperBound != null && upperBound.compareTo(newValue) < 0) return;
     spinner.setValue(newValue);
+    previousValue = newValue;
     if(listener != null) listener.onOptionUpdate(this);
   }
   
@@ -106,6 +124,7 @@ public class NumberSpinnerPanel extends JPanel implements Selectable {
     Integer newValue = (Integer)spinner.getValue() - 1;
     @SuppressWarnings("unchecked") Comparable<Integer> lowerBound = spinnerModel.getMinimum();
     if(lowerBound != null && lowerBound.compareTo(newValue) > 0) return;
+    previousValue = newValue;
     spinner.setValue(newValue);
     //note: do not notify listeners about mistakes--sweep them under the carpet instead ;)
   }

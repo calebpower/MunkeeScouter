@@ -23,6 +23,7 @@ public class CheckboxPanel extends JPanel implements Selectable {
   private static final long serialVersionUID = -84467251141630392L;
   
   private boolean initiallySelected = false;
+  private Component me = null;
   private JLabel label = null;
   private JCheckBox checkbox = null;
   private OptionListener listener = null;
@@ -50,7 +51,10 @@ public class CheckboxPanel extends JPanel implements Selectable {
     
     checkbox.addActionListener(new ActionListener() { //notify listeners on update
       @Override public void actionPerformed(ActionEvent event) {
-        if(listener != null) listener.onOptionUpdate((Component)event.getSource());
+        if(((checkbox.isSelected() && !initiallySelected)
+                || (!checkbox.isSelected() && initiallySelected))
+            && listener != null
+            && me != null) listener.onOptionUpdate(me);
       }
     });
   }
@@ -80,6 +84,7 @@ public class CheckboxPanel extends JPanel implements Selectable {
    * {@inheritDoc}
    */
   @Override public void setListener(OptionListener listener) {
+    if(me == null) me = this;
     this.listener = listener;
   }
   

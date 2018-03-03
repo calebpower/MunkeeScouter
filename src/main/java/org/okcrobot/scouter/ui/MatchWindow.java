@@ -92,7 +92,6 @@ public class MatchWindow extends BasicWindow implements KeyListener, OptionListe
    * Does not display window in and of itself.
    */
   public MatchWindow() {
-    
     super("MunkeeScouter Match Window", 700, 425, 75, 75);
     currentState = State.CLOSED;
     
@@ -222,6 +221,7 @@ public class MatchWindow extends BasicWindow implements KeyListener, OptionListe
     addKeyListener(keyMonitor);
     for(Component component : getAllComponents(this)) {
       component.addKeyListener(keyMonitor);
+      component.setFocusable(false);
     }
     
     timer = new MatchTimer().addListener(this);
@@ -263,8 +263,8 @@ public class MatchWindow extends BasicWindow implements KeyListener, OptionListe
   @Override public void onOptionUpdate(Component component) {
     for(RobotAction action : RobotAction.values())
       if(action.getSelectable().equals(component)) {
-        actionTracker.add(action, new Timestamp(System.currentTimeMillis()));
-        System.out.println("Added " + actionTracker.next().getAction().name() + " at " + actionTracker.getTime().getTime());
+        actionTracker.add(action, timer.getTime());
+        System.out.println("Added " + actionTracker.next().getAction().name() + " at " + actionTracker.getTime());
         break;
       }
   }
@@ -325,6 +325,10 @@ public class MatchWindow extends BasicWindow implements KeyListener, OptionListe
       phaseTextField.setText(phase.toString());
     for(GamePhase optionGroupPhase : optionGroups.keySet()) //highlight as appropriate
       optionGroups.get(optionGroupPhase).toggleHighlight(timer.isRunning() && optionGroupPhase == phase);
+  }
+  
+  public RobotActionList getRobotActions() {
+    return actionTracker;
   }
   
 }

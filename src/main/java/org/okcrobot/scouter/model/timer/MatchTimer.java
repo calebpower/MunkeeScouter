@@ -77,6 +77,15 @@ public class MatchTimer implements Runnable {
   }
   
   /**
+   * Retrieves the current match time.
+   * 
+   * @return long value representing the time
+   */
+  public long getTime() {
+    return timeCount;
+  }
+  
+  /**
    * {@inheritDoc}
    */
   @Override public void run() {

@@ -65,7 +65,6 @@ public class MainMenu extends BasicWindow {
    * Null constructor to construct the main menu.
    */
   public MainMenu() {
-    
     super("MunkeeScouter Main Menu", 400, 500, 100, 100);
         
     bannerImage = new JLabel(new ImageIcon(getClass().getClassLoader().getResource("banner.png")));
