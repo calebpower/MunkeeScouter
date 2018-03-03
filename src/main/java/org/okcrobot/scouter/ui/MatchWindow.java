@@ -144,7 +144,6 @@ public class MatchWindow extends JFrame implements KeyListener, OptionListener {
     keyMonitor = new KeyMonitor().register(this);
     addKeyListener(keyMonitor);
     for(Component component : getAllComponents(this)) {
-      System.out.println("!: " + component.getName());
       component.addKeyListener(keyMonitor);
     }
   }
@@ -157,10 +156,7 @@ public class MatchWindow extends JFrame implements KeyListener, OptionListener {
 
   @Override public void onOptionUpdate(Component selectable) {
     for(RobotAction action : RobotAction.values())
-      if(action.getSelectable().equals(selectable)) {
-        System.out.println("New value = " + action.getSelectable().getValue());
-        break;
-      }
+      if(action.getSelectable().equals(selectable)) break;
   }
 
   @Override public void onKeyPress(int key) {

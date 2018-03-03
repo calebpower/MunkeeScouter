@@ -40,7 +40,6 @@ public class NumberSpinnerPanel extends JPanel implements Selectable {
     
     spinner.addChangeListener(new ChangeListener() {
       @Override public void stateChanged(ChangeEvent event) {
-        System.out.println("Spinner changed: " + spinner.getValue());
         if(listener != null) listener.onOptionUpdate((Component)event.getSource());
       }
     });
@@ -75,7 +74,6 @@ public class NumberSpinnerPanel extends JPanel implements Selectable {
     @SuppressWarnings("unchecked") Comparable<Integer> upperBound = spinnerModel.getMaximum();
     if(upperBound != null && upperBound.compareTo(newValue) < 0) return;
     spinner.setValue(newValue);
-    System.out.println("Checkbox changed: " + spinner.getValue());
     if(listener != null) listener.onOptionUpdate(this);
   }
 
@@ -84,7 +82,6 @@ public class NumberSpinnerPanel extends JPanel implements Selectable {
     @SuppressWarnings("unchecked") Comparable<Integer> lowerBound = spinnerModel.getMinimum();
     if(lowerBound != null && lowerBound.compareTo(newValue) > 0) return;
     spinner.setValue(newValue);
-    System.out.println("Checkbox changed: " + spinner.getValue());
     if(listener != null) listener.onOptionUpdate(this);
   }
   

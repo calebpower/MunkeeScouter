@@ -35,7 +35,6 @@ public class CheckboxPanel extends JPanel implements Selectable {
     
     checkbox.addActionListener(new ActionListener() {
       @Override public void actionPerformed(ActionEvent event) {
-        System.out.println("Checkbox changed: " + checkbox.isSelected());
         if(listener != null) listener.onOptionUpdate((Component)event.getSource());
       }
     });
@@ -59,13 +58,11 @@ public class CheckboxPanel extends JPanel implements Selectable {
 
   @Override public void onKeyUp() {
     checkbox.setSelected(true);
-    System.out.println("Checkbox changed: " + checkbox.isSelected());
     if(listener != null) listener.onOptionUpdate(this);
   }
 
   @Override public void onKeyDown() {
     checkbox.setSelected(false);
-    System.out.println("Checkbox changed: " + checkbox.isSelected());
     if(listener != null) listener.onOptionUpdate(this); 
   }
 }
