@@ -3,6 +3,7 @@ package org.okcrobot.scouter.ui.component;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.util.List;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -71,8 +72,8 @@ public class NumberSpinnerPanel extends JPanel implements Selectable {
 
   @Override public void onKeyUp() {
     Integer newValue = (Integer)spinner.getValue() + 1;
-    Comparable<Integer> upperBound = spinnerModel.getMaximum();
-    if(upperBound != null && upperBound.compareTo(newValue) > 0) return;
+    @SuppressWarnings("unchecked") Comparable<Integer> upperBound = spinnerModel.getMaximum();
+    if(upperBound != null && upperBound.compareTo(newValue) < 0) return;
     spinner.setValue(newValue);
     System.out.println("Checkbox changed: " + spinner.getValue());
     if(listener != null) listener.onOptionUpdate(this);
@@ -80,8 +81,8 @@ public class NumberSpinnerPanel extends JPanel implements Selectable {
 
   @Override public void onKeyDown() {
     Integer newValue = (Integer)spinner.getValue() - 1;
-    Comparable<Integer> lowerBound = spinnerModel.getMinimum();
-    if(lowerBound != null && lowerBound.compareTo(newValue) < 0) return;
+    @SuppressWarnings("unchecked") Comparable<Integer> lowerBound = spinnerModel.getMinimum();
+    if(lowerBound != null && lowerBound.compareTo(newValue) > 0) return;
     spinner.setValue(newValue);
     System.out.println("Checkbox changed: " + spinner.getValue());
     if(listener != null) listener.onOptionUpdate(this);
