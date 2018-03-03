@@ -20,7 +20,6 @@ public class MatchTimer implements Runnable {
   }
   
   public void start() {
-    System.out.println("Start");
     running = true;
   }
   
@@ -32,6 +31,10 @@ public class MatchTimer implements Runnable {
     startTime = System.currentTimeMillis();
     timeCount = 0;
     notifyListeners(timeCount);
+  }
+  
+  public boolean isRunning() {
+    return running;
   }
   
   public MatchTimer addListener(TimerListener listener) {

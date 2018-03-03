@@ -10,7 +10,7 @@ public class MunkeeScouter {
     MainMenu mainMenu = new MainMenu();
     MatchWindow matchWindow = new MatchWindow();
     if(mainMenu.display() == Action.MATCH)
-      matchWindow.display();
+      System.out.println(matchWindow.display().name());
   }
   
 }

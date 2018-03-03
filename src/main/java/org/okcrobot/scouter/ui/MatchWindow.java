@@ -18,17 +18,19 @@ import java.util.Map;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRootPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
-import org.okcrobot.scouter.model.ActionList;
+import org.okcrobot.scouter.model.RobotActionList;
 import org.okcrobot.scouter.model.RobotAction;
 import org.okcrobot.scouter.model.timer.GamePhase;
 import org.okcrobot.scouter.model.timer.MatchTimer;
 import org.okcrobot.scouter.model.timer.TimerListener;
+import org.okcrobot.scouter.ui.MainMenu.Action;
 import org.okcrobot.scouter.ui.component.BorderedPanel;
 import org.okcrobot.scouter.ui.component.DynamicGridBagConstraints;
 import org.okcrobot.scouter.ui.component.HelpfulTextbox;
@@ -39,8 +41,17 @@ import org.okcrobot.scouter.ui.keyboard.KeyMonitor;
 
 public class MatchWindow extends JFrame implements KeyListener, OptionListener, TimerListener {
   
-  private ActionList possibleActions = null;
-  private ActionList actionTracker = null;
+  /**
+   * Actions associated with various buttons on main menu.
+   * 
+   * @author Caleb L. Power
+   */
+  public static enum State {
+    CLOSED, VISIBLE, SAVING
+  }
+  
+  private RobotActionList possibleActions = null;
+  private RobotActionList actionTracker = null;
   private HelpfulTextbox teamNumberTextbox = null;
   private HelpfulTextbox matchNumberTextbox = null;
   private JButton exitButton = null;
@@ -57,8 +68,10 @@ public class MatchWindow extends JFrame implements KeyListener, OptionListener, 
   private Map<GamePhase, OptionGroup> optionGroups = null;
   private MatchTimer timer = null;
   private NumberSpinnerPanel totalAllianceSpinner = null;
+  private State currentState = null;
   
   public MatchWindow() {
+    currentState = State.CLOSED;
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     setTitle("MunkeeScouter Match Window");
     setSize(700, 425);
@@ -103,6 +116,8 @@ public class MatchWindow extends JFrame implements KeyListener, OptionListener, 
       @Override public void actionPerformed(ActionEvent arg0) {
         timer.stop();
         timer.reset();
+        resetButton.setEnabled(false);
+        startButton.setEnabled(true);
       }
     });
     matchInfoPanel.add(resetButton, constraints.setGridX(0).setGridY(1).setGridWidth(2));
@@ -110,6 +125,8 @@ public class MatchWindow extends JFrame implements KeyListener, OptionListener, 
     startButton.addActionListener(new ActionListener() {
       @Override public void actionPerformed(ActionEvent e) {
         timer.start();
+        resetButton.setEnabled(true);
+        startButton.setEnabled(false);
       }
     });
     matchInfoPanel.add(startButton, constraints.shiftGridX(2));
@@ -126,8 +143,8 @@ public class MatchWindow extends JFrame implements KeyListener, OptionListener, 
       constraints.increaseGridX();
     }
     
-    possibleActions = new ActionList(RobotAction.values());
-    actionTracker = new ActionList();
+    possibleActions = new RobotActionList(RobotAction.values());
+    actionTracker = new RobotActionList();
     
     for(RobotAction action : possibleActions.list())
       optionGroups.get(action.getPhase()).add(action.getComponent(this));
@@ -147,7 +164,24 @@ public class MatchWindow extends JFrame implements KeyListener, OptionListener, 
         .setWeightY(0);
     commentPanel.add(new JScrollPane(commentArea), constraints);
     exitButton = new JButton("EXIT");
+    exitButton.addActionListener(new ActionListener() {
+      @Override public void actionPerformed(ActionEvent event) {
+        if(JOptionPane.showOptionDialog(null,
+            "Are you sure you want to exit without saving?",
+            "Warning!",
+            JOptionPane.YES_NO_OPTION,
+            JOptionPane.QUESTION_MESSAGE,
+            null, null, null) == 0) {
+          currentState = State.CLOSED;
+        }
+      }
+    });
     saveButton = new JButton("SAVE");
+    saveButton.addActionListener(new ActionListener() {
+      @Override public void actionPerformed(ActionEvent event) {
+        currentState = State.SAVING;
+      }
+    });
     totalAllianceSpinner = new NumberSpinnerPanel("Total Alliance Points", 0, null);
     BorderedPanel totalAlliancePanel = new BorderedPanel();
     totalAlliancePanel.add(totalAllianceSpinner);
@@ -172,11 +206,19 @@ public class MatchWindow extends JFrame implements KeyListener, OptionListener, 
     timerThread.start();
   }
   
-  public void display() {
+  public State display() {
+    currentState = State.VISIBLE;
     timer.reset();
     setVisible(true);
     setFocusable(true);
     requestFocusInWindow();
+    while(currentState == State.VISIBLE) {
+      try {
+        Thread.sleep(100L);
+      } catch(InterruptedException e) {}
+    }
+    setVisible(false);
+    return currentState;
   }
 
   @Override public void onOptionUpdate(Component selectable) {
@@ -201,6 +243,9 @@ public class MatchWindow extends JFrame implements KeyListener, OptionListener, 
       break;
     case KeyEvent.VK_DOWN:
       possibleActions.getAction().getSelectable().onKeyDown();
+      break;
+    case KeyEvent.VK_SPACE:
+      startButton.doClick();
     }
   }
   
@@ -217,7 +262,16 @@ public class MatchWindow extends JFrame implements KeyListener, OptionListener, 
 
   @Override public void update(long time) {
     time /= 1000;
-    timeTextField.setText((time / 60) + ":" + (time % 60));
+    timeTextField.setText(
+        (time / 60 < 10 ? "0" : "") + (time / 60) + ":"
+      + (time % 60 < 10 ? "0" : "") + (time % 60));
+    GamePhase phase = GamePhase.getPhaseAt(time);
+    if(!timer.isRunning() || phase == null)
+      phaseTextField.setText("READY");
+    else
+      phaseTextField.setText(phase.toString());
+    for(GamePhase optionGroupPhase : optionGroups.keySet())
+      optionGroups.get(optionGroupPhase).toggleHighlight(timer.isRunning() && optionGroupPhase == phase);
   }
   
 }

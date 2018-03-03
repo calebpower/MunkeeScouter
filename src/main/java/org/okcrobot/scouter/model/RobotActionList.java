@@ -5,23 +5,29 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-public class ActionList {
+public class RobotActionList {
   
   int current = -1;
   private List<RobotAction> actions = null;
   private List<Timestamp> times = null;
   
-  public ActionList() {
+  public RobotActionList() {
     actions = new ArrayList<>();
     times = new ArrayList<>();
   }
   
-  public ActionList(RobotAction[] actions) {
+  public RobotActionList(RobotAction[] actions) {
     this();
     for(RobotAction action : actions) {
       this.actions.add(action);
       this.times.add(null);
     }
+  }
+  
+  public void clear() {
+    actions.clear();
+    times.clear();
+    current = -1;
   }
   
   public RobotAction getAction() {
@@ -32,14 +38,14 @@ public class ActionList {
     return times.get(current); 
   }
   
-  public ActionList next() {
+  public RobotActionList next() {
     if(hasNext()) return null;
     current++;
     nudge();
     return this;
   }
   
-  public ActionList previous() {
+  public RobotActionList previous() {
     if(hasPrevious()) return null;
     current--;
     nudge();
