@@ -43,7 +43,7 @@ public class ConfirmationWindow extends BasicWindow implements OptionListener {
   private JTextArea commentArea = null;
   private HelpfulTextbox teamNumberTextbox = null;
   private HelpfulTextbox matchNumberTextbox = null;
-  private List<Component> deletionComponents = null;
+  private List<ConfirmationItem> confirmationItems = null;
   private NumberSpinnerPanel totalAlliancePointSpinner = null;
   private RobotActionList robotActions = null;
   
@@ -75,7 +75,7 @@ public class ConfirmationWindow extends BasicWindow implements OptionListener {
     getContentPane().add(northPanel, BorderLayout.NORTH);
     getContentPane().add(centerPanel, BorderLayout.CENTER);
     
-    deletionComponents = new ArrayList<>();
+    confirmationItems = new ArrayList<>();
   }
   
   public ConfirmationWindow setTeam(String teamNumber) {
@@ -90,6 +90,17 @@ public class ConfirmationWindow extends BasicWindow implements OptionListener {
   
   public ConfirmationWindow setRobotActions(RobotActionList robotActions) {
     this.robotActions = robotActions;
+    
+    confirmationItems.clear();
+    if(robotActions.size() > 0) {
+      robotActions.setCursor(0);
+      do {
+        confirmationItems.add(new ConfirmationItem(
+            robotActions.getAction().toString(),
+            robotActions.getTime()).setListener(this));
+      } while(robotActions.next() != null);
+    }
+    
     return this;
   }
   
@@ -114,7 +125,6 @@ public class ConfirmationWindow extends BasicWindow implements OptionListener {
       if(component instanceof ConfirmationItem)
         itemsPanel.remove(component);
     }
-    deletionComponents.clear();
     
     if(robotActions != null) {
       DynamicGridBagConstraints constraints = new DynamicGridBagConstraints()
@@ -124,6 +134,13 @@ public class ConfirmationWindow extends BasicWindow implements OptionListener {
           .setFill(GridBagConstraints.BOTH)
           .setGridY(0);
       
+      for(ConfirmationItem confirmationItem : confirmationItems) {
+        if(!confirmationItem.isAlive()) continue;
+        itemsPanel.add(confirmationItem, constraints);
+        constraints.increaseGridY();
+      }
+      
+      /*
       System.out.println("size = " + robotActions.size());
       if(robotActions.size() > 0) {
         robotActions.setCursor(0);
@@ -132,10 +149,11 @@ public class ConfirmationWindow extends BasicWindow implements OptionListener {
               robotActions.getAction().toString(),
               robotActions.getTime()).setListener(this);
           itemsPanel.add(confirmationItem, constraints);
-          deletionComponents.add(confirmationItem.getDeletionComponent());
+          confirmationItems.add(confirmationItem);
           constraints.increaseGridY();
         } while(robotActions.next() != null);
       }
+      */
       
       constraints.setWeightY(1);
       itemsPanel.add(new JLabel());
@@ -146,12 +164,10 @@ public class ConfirmationWindow extends BasicWindow implements OptionListener {
   }
   
   @Override public void onOptionUpdate(Component component) {
-    for(int i = 0; i < deletionComponents.size(); i++) {
-      if(deletionComponents.get(i) == component) {
+    for(int i = 0; i < confirmationItems.size(); i++) {
+      if(confirmationItems.get(i).equals(component)) {
         System.out.println("YEP");
-        itemsPanel.remove(i);
-        deletionComponents.remove(i);
-        robotActions.remove(i);
+        confirmationItems.get(i).setAlive(false);
         redrawItems();
         break;
       }

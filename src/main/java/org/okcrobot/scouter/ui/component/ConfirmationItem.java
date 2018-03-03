@@ -30,7 +30,6 @@ public class ConfirmationItem extends JPanel {
     deleteButton = new JButton("X");
     deleteButton.addActionListener(new ActionListener() {
       @Override public void actionPerformed(ActionEvent arg0) {
-        System.out.println("X");
         if(listener != null) listener.onOptionUpdate(deleteButton);
       }
     });
@@ -44,6 +43,18 @@ public class ConfirmationItem extends JPanel {
   
   public Component getDeletionComponent() {
     return deleteButton;
+  }
+  
+  public void setAlive(boolean alive) {
+    this.alive = alive;
+  }
+  
+  public boolean isAlive() {
+    return alive;
+  }
+  
+  public boolean equals(Component component) {
+    return this == component || deleteButton == component;
   }
   
 }
