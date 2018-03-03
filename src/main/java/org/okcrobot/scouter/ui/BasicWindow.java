@@ -5,22 +5,40 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 import javax.swing.JFrame;
+import javax.swing.JRootPane;
 
 /**
  * Movable JFrame (for use on undecorated windows).
  * 
  * @author Caleb L. Power
  */
-public class MovablePanel extends JFrame {
+public class BasicWindow extends JFrame {
   private static final long serialVersionUID = 6008002742862552466L;
   
-  int posX = 0;
-  int posY = 0;
+  int posX, posY;
   
   /**
    * Null constructor.
+   * 
+   * @param title window title 
+   * @param width window width
+   * @param height window height
+   * @param x window starting x position
+   * @param y window starting y position
    */
-  public MovablePanel() {
+  public BasicWindow(String title, int width, int height, int x, int y) {
+    
+    posX = x;
+    posY = y;
+    
+    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    setTitle(title);
+    setSize(width, height);
+    setLocation(x, y);
+    setResizable(false);
+    setUndecorated(true);
+    getRootPane().setWindowDecorationStyle(JRootPane.NONE);
+    
     addMouseListener(new MouseAdapter() {
       public void mousePressed(MouseEvent e) {
         posX = e.getX();

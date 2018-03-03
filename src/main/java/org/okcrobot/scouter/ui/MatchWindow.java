@@ -43,7 +43,7 @@ import org.okcrobot.scouter.ui.keyboard.KeyMonitor;
  * 
  * @author Caleb L. Power
  */
-public class MatchWindow extends MovablePanel implements KeyListener, OptionListener, TimerListener {
+public class MatchWindow extends BasicWindow implements KeyListener, OptionListener, TimerListener {
   private static final long serialVersionUID = 9038948431674394324L;
 
   /**
@@ -94,15 +94,10 @@ public class MatchWindow extends MovablePanel implements KeyListener, OptionList
    * Does not display window in and of itself.
    */
   public MatchWindow() {
+    
+    super("MunkeeScouter Match Window", 700, 425, 75, 75);
     currentState = State.CLOSED;
-    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    setTitle("MunkeeScouter Match Window");
-    setSize(700, 425);
-    setLocation(75, 75);
-    setResizable(false);
-    setUndecorated(true);
-    getRootPane().setWindowDecorationStyle(JRootPane.NONE);
-
+    
     DynamicGridBagConstraints constraints = new DynamicGridBagConstraints()
         .setWeightX(1)
         .setWeightY(1)

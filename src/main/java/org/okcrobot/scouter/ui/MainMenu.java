@@ -16,7 +16,7 @@ import javax.swing.JRootPane;
  * 
  * @author Caleb L. Power
  */
-public class MainMenu extends MovablePanel {
+public class MainMenu extends BasicWindow {
   private static final long serialVersionUID = 8166594334688102102L;
   
   private Action nextAction = null;
@@ -67,14 +67,9 @@ public class MainMenu extends MovablePanel {
    * Null constructor to construct the main menu.
    */
   public MainMenu() {
-    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    setTitle("MunkeeScouter Main Menu");
-    setSize(440, 500); //image is 440x440, extra height required for buttons
-    setLocation(100, 100);
-    setResizable(false);
-    setUndecorated(true);
-    getRootPane().setWindowDecorationStyle(JRootPane.NONE);
     
+    super("MunkeeScouter Main Menu", 400, 500, 100, 100);
+        
     bannerImage = new JLabel(new ImageIcon(getClass().getClassLoader().getResource("banner.png")));
     buttonPanel = new JPanel();
     for(Action action : Action.values()) {
