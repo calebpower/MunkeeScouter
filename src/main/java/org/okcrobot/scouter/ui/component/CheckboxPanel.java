@@ -23,6 +23,7 @@ import org.okcrobot.scouter.ui.Selectable;
 public class CheckboxPanel extends JPanel implements Selectable {
   private static final long serialVersionUID = -84467251141630392L;
   
+  private boolean initiallySelected = false;
   private JLabel label = null;
   private JCheckBox checkbox = null;
   private OptionListener listener = null;
@@ -35,6 +36,7 @@ public class CheckboxPanel extends JPanel implements Selectable {
    *        <code>false</code> if the checkbox should be deselected initially 
    */
   public CheckboxPanel(String text, boolean selected) {
+    initiallySelected = selected;
     label = new JLabel(text);
     checkbox = new JCheckBox();
     checkbox.setSelected(selected);
@@ -58,7 +60,7 @@ public class CheckboxPanel extends JPanel implements Selectable {
    * {@inheritDoc}
    */
   @Override public boolean equals(Component component) {
-    return checkbox == component;
+    return this == component;
   }
   
   /**
@@ -86,15 +88,31 @@ public class CheckboxPanel extends JPanel implements Selectable {
    * {@inheritDoc}
    */
   @Override public void onKeyUp() {
+    if(checkbox.isSelected()) return;
     checkbox.setSelected(true);
-    if(listener != null) listener.onOptionUpdate(this);
+    if(!initiallySelected && listener != null) listener.onOptionUpdate(this);
   }
   
   /**
    * {@inheritDoc}
    */
   @Override public void onKeyDown() {
+    if(!checkbox.isSelected()) return;
     checkbox.setSelected(false);
-    if(listener != null) listener.onOptionUpdate(this); 
+    if(initiallySelected && listener != null) listener.onOptionUpdate(this); 
+  }
+  
+  /**
+   * {@inheritDoc}
+   */
+  @Override public void reset() {
+    checkbox.setSelected(initiallySelected);
+  }
+  
+  /**
+   * {@inheritDoc}
+   */
+  @Override public void setEnabled(boolean enabled) {
+    checkbox.setEnabled(enabled);
   }
 }

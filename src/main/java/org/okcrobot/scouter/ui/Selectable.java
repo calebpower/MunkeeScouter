@@ -50,4 +50,16 @@ public interface Selectable {
    */
   public void setListener(OptionListener listener);
   
+  /**
+   * Resets the value of the Selectable object.
+   */
+  public void reset();
+  
+  /**
+   * Sets the selectable object as enabled or disabled.
+   * 
+   * @param enabled <code>true</code> to enable or <code>false</code> to disable
+   */
+  public void setEnabled(boolean enabled);
+  
 }

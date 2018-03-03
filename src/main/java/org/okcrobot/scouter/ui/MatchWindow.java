@@ -137,10 +137,18 @@ public class MatchWindow extends MovablePanel implements KeyListener, OptionList
     resetButton = new JButton("RESET");
     resetButton.addActionListener(new ActionListener() {
       @Override public void actionPerformed(ActionEvent arg0) {
-        timer.stop();
-        timer.reset();
-        resetButton.setEnabled(false);
-        startButton.setEnabled(true);
+        if(JOptionPane.showOptionDialog(null,
+            "Are you sure you want to reset this match?",
+            "Warning!",
+            JOptionPane.YES_NO_OPTION,
+            JOptionPane.WARNING_MESSAGE,
+            null, null, null) == 0) {
+          timer.stop();
+          timer.reset();
+          resetButton.setEnabled(false);
+          startButton.setEnabled(true);
+          possibleActions.reset();
+        }
       }
     });
     matchInfoPanel.add(resetButton, constraints.setGridX(0).setGridY(1).setGridWidth(2));
@@ -150,6 +158,7 @@ public class MatchWindow extends MovablePanel implements KeyListener, OptionList
         timer.start();
         resetButton.setEnabled(true);
         startButton.setEnabled(false);
+        possibleActions.enable().next();
       }
     });
     matchInfoPanel.add(startButton, constraints.shiftGridX(2));
@@ -193,10 +202,9 @@ public class MatchWindow extends MovablePanel implements KeyListener, OptionList
             "Are you sure you want to exit without saving?",
             "Warning!",
             JOptionPane.YES_NO_OPTION,
-            JOptionPane.QUESTION_MESSAGE,
-            null, null, null) == 0) {
+            JOptionPane.WARNING_MESSAGE,
+            null, null, null) == 0)
           currentState = State.CLOSED;
-        }
       }
     });
     saveButton = new JButton("SAVE");
@@ -238,7 +246,12 @@ public class MatchWindow extends MovablePanel implements KeyListener, OptionList
   public State display() {
     actionTracker.clear();
     currentState = State.VISIBLE;
+    timer.stop();
     timer.reset();
+    possibleActions.reset();
+    resetButton.setEnabled(false);
+    startButton.setEnabled(true);
+    
     setVisible(true);
     setFocusable(true);
     requestFocusInWindow();
@@ -254,9 +267,9 @@ public class MatchWindow extends MovablePanel implements KeyListener, OptionList
   /**
    * {@inheritDoc}
    */
-  @Override public void onOptionUpdate(Component selectable) {
+  @Override public void onOptionUpdate(Component component) {
     for(RobotAction action : RobotAction.values())
-      if(action.getSelectable().equals(selectable)) {
+      if(action.getSelectable().equals(component)) {
         actionTracker.add(action, new Timestamp(System.currentTimeMillis()));
         System.out.println("Added " + actionTracker.next().getAction().name() + " at " + actionTracker.getTime().getTime());
         break;
@@ -267,19 +280,22 @@ public class MatchWindow extends MovablePanel implements KeyListener, OptionList
    * {@inheritDoc}
    */
   @Override public void onKeyPress(int key) {
-    switch(key) {
+    if(possibleActions.isEnabled()) switch(key) {
     case KeyEvent.VK_LEFT:
       possibleActions.previous();
-      break;
+      return;
     case KeyEvent.VK_RIGHT:
       possibleActions.next();
-      break;
+      return;
     case KeyEvent.VK_UP:
       possibleActions.getAction().getSelectable().onKeyUp();
-      break;
+      return;
     case KeyEvent.VK_DOWN:
       possibleActions.getAction().getSelectable().onKeyDown();
-      break;
+      return;
+    }
+    
+    switch(key) {
     case KeyEvent.VK_SPACE:
       startButton.doClick();
     }

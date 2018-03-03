@@ -12,6 +12,7 @@ import java.util.List;
  */
 public class RobotActionList {
   
+  boolean enabled = true;
   int current = -1;
   private List<RobotAction> actions = null;
   private List<Timestamp> times = null;
@@ -39,12 +40,43 @@ public class RobotActionList {
   }
   
   /**
-   * Resets the RobotActionList.
+   * Clears the RobotActionList.
+   *
+   * @return this RobotActionList object
    */
-  public void clear() {
+  public RobotActionList clear() {
     actions.clear();
     times.clear();
     current = -1;
+    return this;
+  }
+  
+  /**
+   * Disables and resets the values of the components in this list.
+   * 
+   * @return this RobotActionList object
+   */
+  public RobotActionList reset() {
+    for(RobotAction action : actions) {
+      action.getSelectable().reset();
+      action.getSelectable().setEnabled(false);
+    }
+    current = -1;
+    enabled = false;
+    nudge();
+    return this;
+  }
+  
+  /**
+   * Enables the values of the components in this list.
+   * 
+   * @return this RobotActionList object
+   */
+  public RobotActionList enable() {
+    for(RobotAction action : actions)
+      action.getSelectable().setEnabled(true);
+    enabled = true;
+    return this;
   }
   
   /**
@@ -164,6 +196,16 @@ public class RobotActionList {
    */
   public List<RobotAction> getList() {
     return actions;
+  }
+  
+  /**
+   * Determines whether or not the elements in the list have been enabled.
+   * 
+   * @return <code>true</code> if the elements have been enabled or
+   *         <code>false</code> if the elements have been disabled
+   */
+  public boolean isEnabled() {
+    return enabled;
   }
   
 }

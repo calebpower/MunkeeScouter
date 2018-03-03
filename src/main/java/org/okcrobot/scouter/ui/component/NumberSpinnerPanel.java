@@ -62,7 +62,7 @@ public class NumberSpinnerPanel extends JPanel implements Selectable {
    * {@inheritDoc}
    */
   @Override public boolean equals(Component component) {
-    return spinner == component;
+    return this == component;
   }
   
   /**
@@ -108,7 +108,21 @@ public class NumberSpinnerPanel extends JPanel implements Selectable {
     @SuppressWarnings("unchecked") Comparable<Integer> lowerBound = spinnerModel.getMinimum();
     if(lowerBound != null && lowerBound.compareTo(newValue) > 0) return;
     spinner.setValue(newValue);
-    if(listener != null) listener.onOptionUpdate(this);
+    //note: do not notify listeners about mistakes--sweep them under the carpet instead ;)
+  }
+  
+  /**
+   * {@inheritDoc}
+   */
+  @Override public void reset() {
+    spinner.setValue(0);
+  }
+  
+  /**
+   * {@inheritDoc}
+   */
+  @Override public void setEnabled(boolean enabled) {
+    spinner.setEnabled(enabled);
   }
   
 }
