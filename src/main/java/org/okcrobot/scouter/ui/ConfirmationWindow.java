@@ -109,7 +109,13 @@ public class ConfirmationWindow extends BasicWindow implements OptionListener {
   }
   
   private void redrawItems() {
-    itemsPanel.removeAll();
+    
+    for(Component component : getAllComponents(itemsPanel)) {
+      if(component instanceof ConfirmationItem)
+        itemsPanel.remove(component);
+    }
+    deletionComponents.clear();
+    
     if(robotActions != null) {
       DynamicGridBagConstraints constraints = new DynamicGridBagConstraints()
           .setWeightX(0)
@@ -118,12 +124,13 @@ public class ConfirmationWindow extends BasicWindow implements OptionListener {
           .setFill(GridBagConstraints.BOTH)
           .setGridY(0);
       
+      System.out.println("size = " + robotActions.size());
       if(robotActions.size() > 0) {
         robotActions.setCursor(0);
         do {
           ConfirmationItem confirmationItem = new ConfirmationItem(
               robotActions.getAction().toString(),
-              robotActions.getTime());
+              robotActions.getTime()).setListener(this);
           itemsPanel.add(confirmationItem, constraints);
           deletionComponents.add(confirmationItem.getDeletionComponent());
           constraints.increaseGridY();
@@ -134,17 +141,21 @@ public class ConfirmationWindow extends BasicWindow implements OptionListener {
       itemsPanel.add(new JLabel());
     }
     
-    itemsPanel.validate();
+    centerPanel.revalidate();
+    centerPanel.repaint();
   }
   
   @Override public void onOptionUpdate(Component component) {
     for(int i = 0; i < deletionComponents.size(); i++) {
       if(deletionComponents.get(i) == component) {
+        System.out.println("YEP");
+        itemsPanel.remove(i);
         deletionComponents.remove(i);
         robotActions.remove(i);
         redrawItems();
         break;
       }
+      System.out.println("NOPE");
     }
   }
   

@@ -296,22 +296,6 @@ public class MatchWindow extends BasicWindow implements KeyListener, OptionListe
   }
   
   /**
-   * Recursively retrieves all (nested) components in a Swing GUI container
-   * @param container the container to search
-   * @return a list of all components
-   */
-  private List<Component> getAllComponents(final Container container) {
-    Component[] components = container.getComponents();
-    List<Component> componentList = new ArrayList<>();
-    for(Component component : components) {
-      componentList.add(component);
-      if(component instanceof Container)
-        componentList.addAll(getAllComponents((Container)component));
-    }
-    return componentList;
-  }
-  
-  /**
    * {@inheritDoc}
    */
   @Override public void update(long time) {

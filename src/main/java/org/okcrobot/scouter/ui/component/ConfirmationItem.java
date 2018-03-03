@@ -15,6 +15,7 @@ import org.okcrobot.scouter.ui.OptionListener;
 
 public class ConfirmationItem extends JPanel {
   
+  private boolean alive = true;
   private JButton deleteButton = null;
   private OptionListener listener = null;
   
@@ -44,4 +45,5 @@ public class ConfirmationItem extends JPanel {
   public Component getDeletionComponent() {
     return deleteButton;
   }
+  
 }
