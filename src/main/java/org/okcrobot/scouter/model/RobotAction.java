@@ -1,7 +1,6 @@
 package org.okcrobot.scouter.model;
 
 import java.awt.Component;
-import java.sql.Timestamp;
 
 import org.okcrobot.scouter.model.timer.GamePhase;
 import org.okcrobot.scouter.ui.OptionListener;
@@ -30,7 +29,6 @@ public enum RobotAction {
   private GamePhase phase = null;
   private Selectable component = null;
   private String text = null;
-  private Timestamp timestamp = null;
   
   private RobotAction(String text) throws RuntimeException {
     switch(name().split("_")[0]) {
@@ -59,25 +57,12 @@ public enum RobotAction {
     component = new NumberSpinnerPanel(text, min, max);
   }
   
-  public RobotAction setDate(Timestamp timestamp) {
-    this.timestamp = timestamp;
-    return this;
-  }
-  
   @Override public String toString() {
     return text;
   }
   
   public GamePhase getPhase() {
     return phase;
-  }
-  
-  public Timestamp getTimestamp() {
-    return timestamp;
-  }
-  
-  public void setTimestamp(Timestamp timestamp) {
-    this.timestamp = timestamp;
   }
   
   public Selectable getSelectable() {

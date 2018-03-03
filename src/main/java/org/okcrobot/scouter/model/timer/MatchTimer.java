@@ -6,21 +6,32 @@ import java.util.Set;
 public class MatchTimer implements Runnable {
   
   private boolean running = false;
-  private int time = 0;
+  private long startTime = 0;
+  private long timeCount = 0;
   private Set<TimerListener> listeners = null;
   
   public MatchTimer() {
     listeners = new HashSet<>();
   }
   
-  private void notifyListeners() {
+  private void notifyListeners(long time) {
     for(TimerListener listener : listeners)
       listener.update(time);
   }
   
+  public void start() {
+    System.out.println("Start");
+    running = true;
+  }
+  
+  public void stop() {
+    running = false;
+  }
+  
   public void reset() {
-    time = 0;
-    notifyListeners();
+    startTime = System.currentTimeMillis();
+    timeCount = 0;
+    notifyListeners(timeCount);
   }
   
   public MatchTimer addListener(TimerListener listener) {
@@ -31,8 +42,8 @@ public class MatchTimer implements Runnable {
   @Override public void run() {
     for(;;) {
       if(running) {
-        time++;
-        notifyListeners();
+        timeCount = System.currentTimeMillis() - startTime;
+        notifyListeners(timeCount);
       }
       try {
         Thread.sleep(100L);

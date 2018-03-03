@@ -7,7 +7,10 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -24,6 +27,8 @@ import javax.swing.JTextField;
 import org.okcrobot.scouter.model.ActionList;
 import org.okcrobot.scouter.model.RobotAction;
 import org.okcrobot.scouter.model.timer.GamePhase;
+import org.okcrobot.scouter.model.timer.MatchTimer;
+import org.okcrobot.scouter.model.timer.TimerListener;
 import org.okcrobot.scouter.ui.component.BorderedPanel;
 import org.okcrobot.scouter.ui.component.DynamicGridBagConstraints;
 import org.okcrobot.scouter.ui.component.HelpfulTextbox;
@@ -32,9 +37,10 @@ import org.okcrobot.scouter.ui.component.OptionGroup;
 import org.okcrobot.scouter.ui.keyboard.KeyListener;
 import org.okcrobot.scouter.ui.keyboard.KeyMonitor;
 
-public class MatchWindow extends JFrame implements KeyListener, OptionListener {
+public class MatchWindow extends JFrame implements KeyListener, OptionListener, TimerListener {
   
-  private ActionList actionList = null;
+  private ActionList possibleActions = null;
+  private ActionList actionTracker = null;
   private HelpfulTextbox teamNumberTextbox = null;
   private HelpfulTextbox matchNumberTextbox = null;
   private JButton exitButton = null;
@@ -49,6 +55,7 @@ public class MatchWindow extends JFrame implements KeyListener, OptionListener {
   private JTextArea commentArea = null;
   private KeyMonitor keyMonitor = null;
   private Map<GamePhase, OptionGroup> optionGroups = null;
+  private MatchTimer timer = null;
   private NumberSpinnerPanel totalAllianceSpinner = null;
   
   public MatchWindow() {
@@ -92,8 +99,19 @@ public class MatchWindow extends JFrame implements KeyListener, OptionListener {
     phaseTextField.setHorizontalAlignment(JTextField.CENTER);
     matchInfoPanel.add(phaseTextField, constraints.shiftGridX(3).setGridWidth(1));
     resetButton = new JButton("RESET");
+    resetButton.addActionListener(new ActionListener() {
+      @Override public void actionPerformed(ActionEvent arg0) {
+        timer.stop();
+        timer.reset();
+      }
+    });
     matchInfoPanel.add(resetButton, constraints.setGridX(0).setGridY(1).setGridWidth(2));
     startButton = new JButton("START");
+    startButton.addActionListener(new ActionListener() {
+      @Override public void actionPerformed(ActionEvent e) {
+        timer.start();
+      }
+    });
     matchInfoPanel.add(startButton, constraints.shiftGridX(2));
     
     centerPanel = new JPanel();
@@ -108,9 +126,10 @@ public class MatchWindow extends JFrame implements KeyListener, OptionListener {
       constraints.increaseGridX();
     }
     
-    actionList = new ActionList(RobotAction.values());
+    possibleActions = new ActionList(RobotAction.values());
+    actionTracker = new ActionList();
     
-    for(RobotAction action : actionList.list())
+    for(RobotAction action : possibleActions.list())
       optionGroups.get(action.getPhase()).add(action.getComponent(this));
     
     for(OptionGroup optionGroup : optionGroups.values())
@@ -146,9 +165,15 @@ public class MatchWindow extends JFrame implements KeyListener, OptionListener {
     for(Component component : getAllComponents(this)) {
       component.addKeyListener(keyMonitor);
     }
+    
+    timer = new MatchTimer().addListener(this);
+    Thread timerThread = new Thread(timer);
+    timerThread.setDaemon(true);
+    timerThread.start();
   }
   
   public void display() {
+    timer.reset();
     setVisible(true);
     setFocusable(true);
     requestFocusInWindow();
@@ -156,22 +181,26 @@ public class MatchWindow extends JFrame implements KeyListener, OptionListener {
 
   @Override public void onOptionUpdate(Component selectable) {
     for(RobotAction action : RobotAction.values())
-      if(action.getSelectable().equals(selectable)) break;
+      if(action.getSelectable().equals(selectable)) {
+        actionTracker.add(action, new Timestamp(System.currentTimeMillis()));
+        System.out.println("Added " + actionTracker.next().getAction().name() + " at " + actionTracker.getTime().getTime());
+        break;
+      }
   }
 
   @Override public void onKeyPress(int key) {
     switch(key) {
     case KeyEvent.VK_LEFT:
-      actionList.prev();
+      possibleActions.previous();
       break;
     case KeyEvent.VK_RIGHT:
-      actionList.next();
+      possibleActions.next();
       break;
     case KeyEvent.VK_UP:
-      actionList.get().getSelectable().onKeyUp();
+      possibleActions.getAction().getSelectable().onKeyUp();
       break;
     case KeyEvent.VK_DOWN:
-      actionList.get().getSelectable().onKeyDown();
+      possibleActions.getAction().getSelectable().onKeyDown();
     }
   }
   
@@ -184,6 +213,11 @@ public class MatchWindow extends JFrame implements KeyListener, OptionListener {
         componentList.addAll(getAllComponents((Container)component));
     }
     return componentList;
+  }
+
+  @Override public void update(long time) {
+    time /= 1000;
+    timeTextField.setText((time / 60) + ":" + (time % 60));
   }
   
 }
