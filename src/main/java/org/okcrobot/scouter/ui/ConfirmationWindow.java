@@ -1,6 +1,10 @@
 package org.okcrobot.scouter.ui;
 
+import org.okcrobot.scouter.model.RobotActionList;
+
 public class ConfirmationWindow extends BasicWindow {
+  
+  private RobotActionList robotActions = null;
   
   public ConfirmationWindow() {
     
@@ -8,8 +12,10 @@ public class ConfirmationWindow extends BasicWindow {
     
   }
   
-  public void display() {
-    
+  public void display(RobotActionList robotActions) {
+    this.robotActions = robotActions;
   }
+  
+  
   
 }
