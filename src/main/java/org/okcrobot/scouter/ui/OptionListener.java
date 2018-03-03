@@ -2,8 +2,18 @@ package org.okcrobot.scouter.ui;
 
 import java.awt.Component;
 
+/**
+ * Listens for option updates.
+ * 
+ * @author Caleb L. Power
+ */
 public interface OptionListener {
   
-  public void onOptionUpdate(Component selectable);
+  /**
+   * Performs an action when an option is updated.
+   * 
+   * @param component the component that was updated
+   */
+  public void onOptionUpdate(Component component);
   
 }

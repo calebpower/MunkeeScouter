@@ -3,7 +3,6 @@ package org.okcrobot.scouter.ui.component;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.util.List;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -18,12 +17,26 @@ import javax.swing.event.ChangeListener;
 import org.okcrobot.scouter.ui.OptionListener;
 import org.okcrobot.scouter.ui.Selectable;
 
+/**
+ * Number spinner with label.
+ * 
+ * @author Caleb L. Power
+ */
 public class NumberSpinnerPanel extends JPanel implements Selectable {
+  private static final long serialVersionUID = 950645593888496942L;
+  
   private JLabel label = null;
   private JSpinner spinner = null;
   private OptionListener listener = null;
   private SpinnerNumberModel spinnerModel = null;
   
+  /**
+   * Overloaded constructor to set the label text and spinner bounds.
+   * 
+   * @param text the text of the label
+   * @param min the minimum value that the spinner can be
+   * @param max the maximum value that the spinner can be
+   */
   public NumberSpinnerPanel(String text, Comparable<Integer> min, Comparable<Integer> max) {
     label = new JLabel(text);
     spinnerModel = new SpinnerNumberModel(0, min, max, 1);
@@ -45,30 +58,40 @@ public class NumberSpinnerPanel extends JPanel implements Selectable {
     });
   }
   
-  public NumberSpinnerPanel(String text, Comparable<Integer> min, Comparable<Integer> max, OptionListener listener) {
-    this(text, min, max);
-    this.listener = listener;
-  }
-  
+  /**
+   * {@inheritDoc}
+   */
   @Override public boolean equals(Component component) {
     return spinner == component;
   }
   
+  /**
+   * {@inheritDoc}
+   */
   @Override public int getValue() {
     try {
       return ((Integer)spinnerModel.getValue()).intValue();
     } catch(ClassCastException e) { }
     return 0;
   }
-
+  
+  /**
+   * {@inheritDoc}
+   */
   @Override public void setSelected(boolean selected) {
     label.setForeground(selected ? Color.GREEN : Color.BLACK);
   }
-
+  
+  /**
+   * {@inheritDoc}
+   */
   @Override public void setListener(OptionListener listener) {
     this.listener = listener;
   }
-
+  
+  /**
+   * {@inheritDoc}
+   */
   @Override public void onKeyUp() {
     Integer newValue = (Integer)spinner.getValue() + 1;
     @SuppressWarnings("unchecked") Comparable<Integer> upperBound = spinnerModel.getMaximum();
@@ -76,7 +99,10 @@ public class NumberSpinnerPanel extends JPanel implements Selectable {
     spinner.setValue(newValue);
     if(listener != null) listener.onOptionUpdate(this);
   }
-
+  
+  /**
+   * {@inheritDoc}
+   */
   @Override public void onKeyDown() {
     Integer newValue = (Integer)spinner.getValue() - 1;
     @SuppressWarnings("unchecked") Comparable<Integer> lowerBound = spinnerModel.getMinimum();

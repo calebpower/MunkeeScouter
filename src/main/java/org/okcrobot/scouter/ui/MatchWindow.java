@@ -25,12 +25,11 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
-import org.okcrobot.scouter.model.RobotActionList;
 import org.okcrobot.scouter.model.RobotAction;
+import org.okcrobot.scouter.model.RobotActionList;
 import org.okcrobot.scouter.model.timer.GamePhase;
 import org.okcrobot.scouter.model.timer.MatchTimer;
 import org.okcrobot.scouter.model.timer.TimerListener;
-import org.okcrobot.scouter.ui.MainMenu.Action;
 import org.okcrobot.scouter.ui.component.BorderedPanel;
 import org.okcrobot.scouter.ui.component.DynamicGridBagConstraints;
 import org.okcrobot.scouter.ui.component.HelpfulTextbox;
@@ -39,15 +38,35 @@ import org.okcrobot.scouter.ui.component.OptionGroup;
 import org.okcrobot.scouter.ui.keyboard.KeyListener;
 import org.okcrobot.scouter.ui.keyboard.KeyMonitor;
 
+/**
+ * GUI window that records the match in progress.
+ * 
+ * @author Caleb L. Power
+ */
 public class MatchWindow extends JFrame implements KeyListener, OptionListener, TimerListener {
-  
+  private static final long serialVersionUID = 9038948431674394324L;
+
   /**
    * Actions associated with various buttons on main menu.
    * 
    * @author Caleb L. Power
    */
   public static enum State {
-    CLOSED, VISIBLE, SAVING
+    /**
+     * Indicates that the match window is or was closed.
+     */
+    CLOSED,
+    
+    /**
+     * Indicates that the match window is currently visible.
+     */
+    
+    VISIBLE,
+    
+    /**
+     * Indicates that the save/review window needs to be opened.
+     */
+    SAVING
   }
   
   private RobotActionList possibleActions = null;
@@ -70,6 +89,10 @@ public class MatchWindow extends JFrame implements KeyListener, OptionListener, 
   private NumberSpinnerPanel totalAllianceSpinner = null;
   private State currentState = null;
   
+  /**
+   * Null constructor for the match window.
+   * Does not display window in and of itself.
+   */
   public MatchWindow() {
     currentState = State.CLOSED;
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -146,7 +169,7 @@ public class MatchWindow extends JFrame implements KeyListener, OptionListener, 
     possibleActions = new RobotActionList(RobotAction.values());
     actionTracker = new RobotActionList();
     
-    for(RobotAction action : possibleActions.list())
+    for(RobotAction action : possibleActions.getList()) //dynamically get all possible actions
       optionGroups.get(action.getPhase()).add(action.getComponent(this));
     
     for(OptionGroup optionGroup : optionGroups.values())
@@ -206,6 +229,12 @@ public class MatchWindow extends JFrame implements KeyListener, OptionListener, 
     timerThread.start();
   }
   
+  /**
+   * Resets values and displays the window.
+   * 
+   * @return State the final state of the match window (indicates the next
+   *         action that should be taken by the program)
+   */
   public State display() {
     actionTracker.clear();
     currentState = State.VISIBLE;
@@ -221,7 +250,10 @@ public class MatchWindow extends JFrame implements KeyListener, OptionListener, 
     setVisible(false);
     return currentState;
   }
-
+  
+  /**
+   * {@inheritDoc}
+   */
   @Override public void onOptionUpdate(Component selectable) {
     for(RobotAction action : RobotAction.values())
       if(action.getSelectable().equals(selectable)) {
@@ -230,7 +262,10 @@ public class MatchWindow extends JFrame implements KeyListener, OptionListener, 
         break;
       }
   }
-
+  
+  /**
+   * {@inheritDoc}
+   */
   @Override public void onKeyPress(int key) {
     switch(key) {
     case KeyEvent.VK_LEFT:
@@ -250,8 +285,13 @@ public class MatchWindow extends JFrame implements KeyListener, OptionListener, 
     }
   }
   
-  private List<Component> getAllComponents(final Container c) {
-    Component[] components = c.getComponents();
+  /**
+   * Recursively retrieves all (nested) components in a Swing GUI container
+   * @param container the container to search
+   * @return a list of all components
+   */
+  private List<Component> getAllComponents(final Container container) {
+    Component[] components = container.getComponents();
     List<Component> componentList = new ArrayList<>();
     for(Component component : components) {
       componentList.add(component);
@@ -260,18 +300,21 @@ public class MatchWindow extends JFrame implements KeyListener, OptionListener, 
     }
     return componentList;
   }
-
+  
+  /**
+   * {@inheritDoc}
+   */
   @Override public void update(long time) {
-    time /= 1000;
-    timeTextField.setText(
+    time /= 1000; //scrub milliseconds
+    timeTextField.setText( //add 0 for padding if necessary
         (time / 60 < 10 ? "0" : "") + (time / 60) + ":"
       + (time % 60 < 10 ? "0" : "") + (time % 60));
     GamePhase phase = GamePhase.getPhaseAt(time);
-    if(!timer.isRunning() || phase == null)
+    if(!timer.isRunning() || phase == null) //indicate phase in textbox
       phaseTextField.setText("READY");
     else
       phaseTextField.setText(phase.toString());
-    for(GamePhase optionGroupPhase : optionGroups.keySet())
+    for(GamePhase optionGroupPhase : optionGroups.keySet()) //highlight as appropriate
       optionGroups.get(optionGroupPhase).toggleHighlight(timer.isRunning() && optionGroupPhase == phase);
   }
   

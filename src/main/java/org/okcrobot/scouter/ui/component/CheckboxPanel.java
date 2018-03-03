@@ -15,11 +15,25 @@ import javax.swing.JPanel;
 import org.okcrobot.scouter.ui.OptionListener;
 import org.okcrobot.scouter.ui.Selectable;
 
+/**
+ * Checkbox panel with label.
+ * 
+ * @author Caleb L. Power
+ */
 public class CheckboxPanel extends JPanel implements Selectable {
+  private static final long serialVersionUID = -84467251141630392L;
+  
   private JLabel label = null;
   private JCheckBox checkbox = null;
   private OptionListener listener = null;
   
+  /**
+   * Overloaded constructor to set the label text and the state of the checkbox.
+   * 
+   * @param text the label text
+   * @param selected <code>true</code> if the checkbox should be selected initially or
+   *        <code>false</code> if the checkbox should be deselected initially 
+   */
   public CheckboxPanel(String text, boolean selected) {
     label = new JLabel(text);
     checkbox = new JCheckBox();
@@ -33,34 +47,52 @@ public class CheckboxPanel extends JPanel implements Selectable {
     add(Box.createRigidArea(new Dimension(10, 0)));
     add(checkbox);
     
-    checkbox.addActionListener(new ActionListener() {
+    checkbox.addActionListener(new ActionListener() { //notify listeners on update
       @Override public void actionPerformed(ActionEvent event) {
         if(listener != null) listener.onOptionUpdate((Component)event.getSource());
       }
     });
   }
   
+  /**
+   * {@inheritDoc}
+   */
   @Override public boolean equals(Component component) {
     return checkbox == component;
   }
   
+  /**
+   * {@inheritDoc}
+   */
   @Override public int getValue() {
     return checkbox.isSelected() ? 1 : 0;
   }
-
+  
+  /**
+   * {@inheritDoc}
+   */
   @Override public void setSelected(boolean selected) {
     label.setForeground(selected ? Color.GREEN : Color.BLACK);
   }
-
+  
+  /**
+   * {@inheritDoc}
+   */
   @Override public void setListener(OptionListener listener) {
     this.listener = listener;
   }
-
+  
+  /**
+   * {@inheritDoc}
+   */
   @Override public void onKeyUp() {
     checkbox.setSelected(true);
     if(listener != null) listener.onOptionUpdate(this);
   }
-
+  
+  /**
+   * {@inheritDoc}
+   */
   @Override public void onKeyDown() {
     checkbox.setSelected(false);
     if(listener != null) listener.onOptionUpdate(this); 

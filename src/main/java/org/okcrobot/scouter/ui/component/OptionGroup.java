@@ -1,21 +1,29 @@
 package org.okcrobot.scouter.ui.component;
 
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.util.List;
 
-import javax.swing.BorderFactory;
 import javax.swing.JLabel;
-import javax.swing.border.Border;
-import javax.swing.border.TitledBorder;
 
+import org.okcrobot.scouter.model.timer.GamePhase;
+
+/**
+ * Groups various options together (presumably by FRC {@link GamePhase}
+ * 
+ * @author Caleb L. Power
+ */
 public class OptionGroup extends BorderedPanel {
+  private static final long serialVersionUID = -2267282713258890953L;
   
   private DynamicGridBagConstraints constraints = null;
   
+  /**
+   * Overloaded constructor to set the title of the option group.
+   * 
+   * @param title the title of the option group
+   */
   public OptionGroup(String title) {
     super(title);
     setLayout(new GridBagLayout());
@@ -26,17 +34,18 @@ public class OptionGroup extends BorderedPanel {
         .setFill(GridBagConstraints.HORIZONTAL);
   }
   
+  /**
+   * {@inheritDoc}
+   */
   @Override public Component add(Component component) {
     add(component, constraints.setGridY(constraints.gridy + 1));
     return component;
   }
   
-  public List<Component> add(List<Component> components) {
-    for(Component component : components)
-      add(component);
-    return components;
-  }
-  
+  /**
+   * Pads the option group on the bottom so that vertical spacing doesn't become
+   * an issue. <strong>To be used only after all elements have been added.</strong>
+   */
   public void pad() {
     constraints.setWeightY(1);
     add(new JLabel());

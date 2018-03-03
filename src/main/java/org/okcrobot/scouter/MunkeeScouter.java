@@ -4,9 +4,19 @@ import org.okcrobot.scouter.ui.MainMenu;
 import org.okcrobot.scouter.ui.MatchWindow;
 import org.okcrobot.scouter.ui.MainMenu.Action;
 
+/**
+ * An FRC match scouting program designed for the NinjaMunkees team.
+ * 
+ * @author Caleb L. Power
+ */
 public class MunkeeScouter {
   
-  public static void main(String[] args) {
+  /**
+   * Entry point for the program.
+   * 
+   * @param cheese command-line arguments
+   */
+  public static void main(String[] cheese) {
     MainMenu mainMenu = new MainMenu();
     MatchWindow matchWindow = new MatchWindow();
     if(mainMenu.display() == Action.MATCH)
