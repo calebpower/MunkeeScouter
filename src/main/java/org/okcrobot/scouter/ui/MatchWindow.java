@@ -261,9 +261,10 @@ public class MatchWindow extends BasicWindow implements KeyListener, OptionListe
    * {@inheritDoc}
    */
   @Override public void onOptionUpdate(Component component) {
-    for(RobotAction action : RobotAction.values())
-      if(action.getSelectable().equals(component)) {
-        actionTracker.add(action, timer.getTime());
+    for(int i = 0; i < possibleActions.size(); i++)
+      if(possibleActions.getAction(i).getSelectable().equals(component)) {
+        possibleActions.setCursor(i);
+        actionTracker.add(possibleActions.getAction(i), timer.getTime());
         System.out.println("Added " + actionTracker.next().getAction().name() + " at " + actionTracker.getTime());
         break;
       }

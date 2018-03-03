@@ -88,12 +88,32 @@ public class RobotActionList {
   }
   
   /**
-   * Retrieves the time that the current robot action occurred.
+   * Retrieves the robot action at the specified index.
+   * 
+   * @param i the specified index
+   * @return the datum at the specified index
+   */
+  public RobotAction getAction(int i) {
+    return actions.get(i);
+  }
+  
+  /**
+   * Retrieves the time at which the current robot action occurred.
    * 
    * @return timestamp at which the current action took place
    */
   public long getTime() {
     return times.get(current); 
+  }
+  
+  /**
+   * Retrieves the time at which the robot action at the specified index occurred.
+   * 
+   * @param i the specified index
+   * @return the datum at the specified index
+   */
+  public long getTime(int i) {
+    return times.get(i);
   }
   
   /**
@@ -108,6 +128,7 @@ public class RobotActionList {
   public boolean setCursor(int i) {
     if(i < 0 || i >= actions.size()) return false;
     current = i;
+    nudge();
     return true;
   }
   

@@ -77,7 +77,7 @@ public class CheckboxPanel extends JPanel implements Selectable {
    * {@inheritDoc}
    */
   @Override public void setSelected(boolean selected) {
-    label.setForeground(selected ? Color.GREEN : Color.BLACK);
+    label.setForeground(selected ? Color.RED : Color.BLACK);
   }
   
   /**

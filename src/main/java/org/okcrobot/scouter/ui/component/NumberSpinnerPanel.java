@@ -55,6 +55,8 @@ public class NumberSpinnerPanel extends JPanel implements Selectable {
     spinner.addChangeListener(new ChangeListener() {
       @Override public void stateChanged(ChangeEvent event) {
         Integer newValue = (Integer)spinner.getValue();
+        
+        //note: do not notify listeners about mistakes--sweep them under the carpet instead ;)
         if(newValue.compareTo(previousValue) > 0 &&
             listener != null && me != null) listener.onOptionUpdate(me);
         previousValue = newValue;
@@ -94,7 +96,7 @@ public class NumberSpinnerPanel extends JPanel implements Selectable {
    * {@inheritDoc}
    */
   @Override public void setSelected(boolean selected) {
-    label.setForeground(selected ? Color.GREEN : Color.BLACK);
+    label.setForeground(selected ? Color.RED : Color.BLACK);
   }
   
   /**
@@ -114,7 +116,6 @@ public class NumberSpinnerPanel extends JPanel implements Selectable {
     if(upperBound != null && upperBound.compareTo(newValue) < 0) return;
     spinner.setValue(newValue);
     previousValue = newValue;
-    if(listener != null) listener.onOptionUpdate(this);
   }
   
   /**
@@ -126,7 +127,6 @@ public class NumberSpinnerPanel extends JPanel implements Selectable {
     if(lowerBound != null && lowerBound.compareTo(newValue) > 0) return;
     previousValue = newValue;
     spinner.setValue(newValue);
-    //note: do not notify listeners about mistakes--sweep them under the carpet instead ;)
   }
   
   /**
