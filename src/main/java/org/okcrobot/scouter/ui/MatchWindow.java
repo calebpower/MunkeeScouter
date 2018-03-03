@@ -43,7 +43,7 @@ import org.okcrobot.scouter.ui.keyboard.KeyMonitor;
  * 
  * @author Caleb L. Power
  */
-public class MatchWindow extends JFrame implements KeyListener, OptionListener, TimerListener {
+public class MatchWindow extends MovablePanel implements KeyListener, OptionListener, TimerListener {
   private static final long serialVersionUID = 9038948431674394324L;
 
   /**

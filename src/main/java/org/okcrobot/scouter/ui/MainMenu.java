@@ -16,7 +16,7 @@ import javax.swing.JRootPane;
  * 
  * @author Caleb L. Power
  */
-public class MainMenu extends JFrame {
+public class MainMenu extends MovablePanel {
   private static final long serialVersionUID = 8166594334688102102L;
   
   private Action nextAction = null;
