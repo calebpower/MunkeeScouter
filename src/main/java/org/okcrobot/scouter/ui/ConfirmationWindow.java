@@ -9,7 +9,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
 import org.okcrobot.scouter.model.RobotAction;
@@ -32,10 +34,12 @@ public class ConfirmationWindow extends BasicWindow implements OptionListener {
       button = new JButton(text);
     }
   }
-  
+
+  private JPanel itemsPanel = null;
   private JPanel northPanel = null;
   private JPanel centerPanel = null;
   private JPanel southPanel = null;
+  private JScrollPane itemsScrollPane = null;
   private JTextArea commentArea = null;
   private HelpfulTextbox teamNumberTextbox = null;
   private HelpfulTextbox matchNumberTextbox = null;
@@ -44,7 +48,7 @@ public class ConfirmationWindow extends BasicWindow implements OptionListener {
   private RobotActionList robotActions = null;
   
   public ConfirmationWindow() {
-    super("MunkeeScouter Match Confirmation", 300, 600, 90, 90);
+    super("MunkeeScouter Match Confirmation", 500, 600, 90, 90);
     
     DynamicGridBagConstraints constraints = new DynamicGridBagConstraints()
         .setWeightX(1)
@@ -59,10 +63,17 @@ public class ConfirmationWindow extends BasicWindow implements OptionListener {
     matchNumberTextbox = new HelpfulTextbox("Match Number");
     northPanel.add(matchNumberTextbox, constraints.increaseGridY());
     
+    constraints.setFill(GridBagConstraints.BOTH);
     centerPanel = new BorderedPanel();
     centerPanel.setLayout(new GridBagLayout());
+    itemsPanel = new JPanel();
+    itemsPanel.setLayout(new GridBagLayout());
+    itemsScrollPane = new JScrollPane(itemsPanel);
+    itemsScrollPane.getViewport().setPreferredSize(itemsScrollPane.getSize());
+    centerPanel.add(itemsScrollPane, constraints);
     
     getContentPane().add(northPanel, BorderLayout.NORTH);
+    getContentPane().add(centerPanel, BorderLayout.CENTER);
     
     deletionComponents = new ArrayList<>();
   }
@@ -98,30 +109,32 @@ public class ConfirmationWindow extends BasicWindow implements OptionListener {
   }
   
   private void redrawItems() {
-    centerPanel.removeAll();
+    itemsPanel.removeAll();
     if(robotActions != null) {
       DynamicGridBagConstraints constraints = new DynamicGridBagConstraints()
           .setWeightX(0)
           .setWeightY(0)
           .setInsets(new Insets(0, 0, 10, 0))
-          .setFill(GridBagConstraints.HORIZONTAL)
-          .setGridY(-1);
+          .setFill(GridBagConstraints.BOTH)
+          .setGridY(0);
       
       if(robotActions.size() > 0) {
-        System.out.println("Checkpoint 1");
         robotActions.setCursor(0);
         do {
-          System.out.println("Checkpoint 2");
           ConfirmationItem confirmationItem = new ConfirmationItem(
               robotActions.getAction().toString(),
               robotActions.getTime());
-          centerPanel.add(confirmationItem);
+          itemsPanel.add(confirmationItem, constraints);
           deletionComponents.add(confirmationItem.getDeletionComponent());
-          System.out.println("Ding!");
+          constraints.increaseGridY();
         } while(robotActions.next() != null);
       }
+      
+      constraints.setWeightY(1);
+      itemsPanel.add(new JLabel());
     }
-    centerPanel.validate();
+    
+    itemsPanel.validate();
   }
   
   @Override public void onOptionUpdate(Component component) {

@@ -20,15 +20,12 @@ public class ConfirmationItem extends JPanel {
   
   public ConfirmationItem(String action, long time) {
     setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
-    add(new JLabel(action));
-    add(Box.createHorizontalGlue());
-    add(Box.createRigidArea(new Dimension(10, 0)));
     time /= 1000; //scrub milliseconds
-    add(new JLabel(//add 0 for padding if necessary
-        (time / 60 < 10 ? "0" : "") + (time / 60) + ":"
-      + (time % 60 < 10 ? "0" : "") + (time % 60)));
+    add(new JLabel(action + " ("//add 0 for padding if necessary
+      + (time / 60 < 10 ? "0" : "") + (time / 60) + ":"
+      + (time % 60 < 10 ? "0" : "") + (time % 60) + ")"));
     add(Box.createHorizontalGlue());
-    add(Box.createRigidArea(new Dimension(10, 0)));
+    add(Box.createRigidArea(new Dimension(20, 0)));
     deleteButton = new JButton("X");
     deleteButton.addActionListener(new ActionListener() {
       @Override public void actionPerformed(ActionEvent arg0) {
