@@ -13,7 +13,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import org.okcrobot.scouter.ui.OptionListener;
-import org.okcrobot.scouter.ui.Selectable;
 
 /**
  * Checkbox panel with label.

@@ -15,7 +15,6 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import org.okcrobot.scouter.ui.OptionListener;
-import org.okcrobot.scouter.ui.Selectable;
 
 /**
  * Number spinner with label.

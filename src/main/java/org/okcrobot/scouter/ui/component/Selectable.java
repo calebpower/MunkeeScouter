@@ -1,6 +1,8 @@
-package org.okcrobot.scouter.ui;
+package org.okcrobot.scouter.ui.component;
 
 import java.awt.Component;
+
+import org.okcrobot.scouter.ui.OptionListener;
 
 /**
  * A selectable object (preferably related to the GUI)

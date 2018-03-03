@@ -4,9 +4,9 @@ import java.awt.Component;
 
 import org.okcrobot.scouter.model.timer.GamePhase;
 import org.okcrobot.scouter.ui.OptionListener;
-import org.okcrobot.scouter.ui.Selectable;
 import org.okcrobot.scouter.ui.component.CheckboxPanel;
 import org.okcrobot.scouter.ui.component.NumberSpinnerPanel;
+import org.okcrobot.scouter.ui.component.Selectable;
 
 /**
  * Various actions that the robot is able to perform during a match.
