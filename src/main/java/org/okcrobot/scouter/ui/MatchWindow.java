@@ -207,6 +207,7 @@ public class MatchWindow extends JFrame implements KeyListener, OptionListener, 
   }
   
   public State display() {
+    actionTracker.clear();
     currentState = State.VISIBLE;
     timer.reset();
     setVisible(true);
