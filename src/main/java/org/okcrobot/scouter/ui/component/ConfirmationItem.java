@@ -18,19 +18,16 @@ public class ConfirmationItem extends JPanel {
   private boolean alive = true;
   private JButton deleteButton = null;
   private OptionListener listener = null;
+  private TimeSpinner timeSpinner = null;
   
   public ConfirmationItem(String action, long time) {
     setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
-    System.out.println("TIME = " + time);
-    long minute = time / 60000L;
-    long second = time % 60000L / 1000;
-    long millisecond = time % 60000L - (second * 1000);
-    System.out.println(minute + " " + second + " " + millisecond);
     
-    add(new JLabel(action + " ("//add 0 for padding if necessary
-      + (minute < 10 ? "0" : "") + minute + ":"
-      + (second < 10 ? "0" : "") + second + "."
-      + millisecond + ")"));
+    add(new JLabel(action));
+    add(Box.createHorizontalGlue());
+    add(Box.createRigidArea(new Dimension(20, 0)));
+    timeSpinner = new TimeSpinner(time);
+    add(timeSpinner);
     add(Box.createHorizontalGlue());
     add(Box.createRigidArea(new Dimension(20, 0)));
     deleteButton = new JButton("X");
@@ -61,6 +58,10 @@ public class ConfirmationItem extends JPanel {
   
   public boolean equals(Component component) {
     return this == component || deleteButton == component;
+  }
+  
+  public TimeSpinner getTimeSpinner() {
+    return timeSpinner;
   }
   
 }
