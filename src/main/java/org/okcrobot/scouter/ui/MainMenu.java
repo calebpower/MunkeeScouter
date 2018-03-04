@@ -28,11 +28,6 @@ public class MainMenu extends BasicWindow {
    */
   public static enum Action {
     /**
-     * Denotes a request to load a file.
-     */
-    LOAD("Load / Save"),
-    
-    /**
      * Denotes a request to start recording a match.
      */
     MATCH("New Match"),
@@ -40,7 +35,7 @@ public class MainMenu extends BasicWindow {
     /**
      * Denotes a request to export currently-saved data.
      */
-    EXPORT("Export Data"),
+    AGGREGATE("Aggregate"),
     
     /**
      * Denotes a request to exit the program.

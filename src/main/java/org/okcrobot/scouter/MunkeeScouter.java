@@ -28,12 +28,11 @@ public class MunkeeScouter {
       switch(mainMenu.display()) {
       case EXIT:
         break main;
-      case EXPORT:
+        
+      case AGGREGATE:
         //TODO export files
         break;
-      case LOAD:
-        //TODO save/load files
-        break;
+        
       case MATCH:
         
         switch(matchWindow.display()) {

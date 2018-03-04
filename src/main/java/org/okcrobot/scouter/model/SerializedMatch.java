@@ -25,7 +25,7 @@ public class SerializedMatch {
    * Overloaded constructor to interpret non-serialized data.
    * 
    * @param confirmationItems the actions that the robot took
-   * @param team the team numbe
+   * @param team the team number
    * @param match the match number
    * @param comments the user's comments
    * @param alliancePoints the total number of points the alliance won
@@ -47,10 +47,30 @@ public class SerializedMatch {
     this.alliancePoints = alliancePoints;
   }
   
+  /**
+   * Overloaded constructor to interpret serialized data.
+   * 
+   * @param json the serialized data in JSON format
+   * @throws JSONException to be thrown if the JSON was incomplete or unreadable
+   */
   public SerializedMatch(JSONObject json) throws JSONException {
     this.actions = new LinkedList<>();
     
-    //TODO finish this    
+    JSONArray actionArray = json.getJSONArray("actions");
+    for(Object actionObject : actionArray) {
+      JSONObject action = (JSONObject)actionObject;
+      JSONObject time = action.getJSONObject("time");
+      this.actions.add(new SerializedAction(
+          action.getString("action"),
+          time.getInt("minute"),
+          time.getInt("second"),
+          time.getInt("millisecond")));
+    }
+    
+    team = json.getString("team");
+    match = json.getString("match");
+    comments = json.getString("comments");
+    alliancePoints = json.getInt("alliancePoints");
   }
   
   /**
@@ -59,7 +79,6 @@ public class SerializedMatch {
    * @return serialized data in JSON format
    */
   public JSONObject serialize() {
-    
     JSONArray actionArray = new JSONArray();
     for(SerializedAction action : actions) {
       actionArray.put(new JSONObject()
