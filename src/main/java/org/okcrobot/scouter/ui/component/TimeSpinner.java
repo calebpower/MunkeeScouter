@@ -86,7 +86,7 @@ public class TimeSpinner extends JPanel {
    * @return integer representation of the minute spinner
    */
   public int getMinute() {
-    return ((Integer)minuteSpinner.getValue());
+    return ((Double)minuteSpinner.getValue()).intValue();
   }
   
   /**
@@ -95,7 +95,7 @@ public class TimeSpinner extends JPanel {
    * @return integer representation of the second spinner
    */
   public int getSecond() {
-    return ((Integer)secondSpinner.getValue());
+    return ((Double)secondSpinner.getValue()).intValue();
   }
   
   /**
@@ -104,7 +104,7 @@ public class TimeSpinner extends JPanel {
    * @return integer representation of the millisecond spinner
    */
   public int getMillisecond() {
-    return ((Integer)millisecondSpinner.getValue());
+    return ((Double)millisecondSpinner.getValue()).intValue();
   }
   
 }

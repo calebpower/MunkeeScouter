@@ -17,6 +17,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.okcrobot.scouter.model.RobotActionList;
 import org.okcrobot.scouter.ui.component.BorderedPanel;
 import org.okcrobot.scouter.ui.component.ConfirmationItem;
@@ -289,6 +291,33 @@ public class ConfirmationWindow extends BasicWindow implements OptionListener {
         break;
       }
     }
+  }
+  
+  /**
+   * Serializes the data stored within the confirmation window.
+   * 
+   * @return serialized data in JSON format
+   */
+  public JSONObject serialize() {
+    
+    JSONArray actionArray = new JSONArray();
+    for(ConfirmationItem confirmationItem : confirmationItems) {
+      if(confirmationItem.isAlive()) {
+        actionArray.put(new JSONObject()
+            .put("action", confirmationItem.getAction())
+            .put("time", new JSONObject()
+                .put("minute", confirmationItem.getTimeSpinner().getMinute())
+                .put("second", confirmationItem.getTimeSpinner().getSecond())
+                .put("millisecond", confirmationItem.getTimeSpinner().getMillisecond())));
+      }
+    }
+    
+    return new JSONObject()
+        .put("actions", actionArray)
+        .put("comments", commentArea.getText())
+        .put("alliancePoints", totalAlliancePointSpinner.getValue())
+        .put("team", teamNumberTextbox.getValue())
+        .put("match", matchNumberTextbox.getValue());
   }
   
   /**

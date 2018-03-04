@@ -25,6 +25,7 @@ public class ConfirmationItem extends JPanel {
   private JButton deleteButton = null;
   private long time = 0L;
   private OptionListener listener = null;
+  private String action = null;
   private TimeSpinner timeSpinner = null;
   
   /**
@@ -34,6 +35,7 @@ public class ConfirmationItem extends JPanel {
    * @param time the at which the robot performed said action
    */
   public ConfirmationItem(String action, long time) {
+    this.action = action;
     this.time = time;
     setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
     JLabel actionLabel = new JLabel(action);
@@ -124,6 +126,15 @@ public class ConfirmationItem extends JPanel {
    */
   public TimeSpinner getTimeSpinner() {
     return timeSpinner;
+  }
+  
+  /**
+   * Retrieves the text of the action associated with this item.
+   * 
+   * @return String representation of the action
+   */
+  public String getAction() {
+    return action;
   }
   
 }

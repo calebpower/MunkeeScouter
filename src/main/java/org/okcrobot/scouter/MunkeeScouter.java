@@ -1,5 +1,8 @@
 package org.okcrobot.scouter;
 
+import javax.swing.JFileChooser;
+
+import org.okcrobot.scouter.persistent.FileHandler;
 import org.okcrobot.scouter.ui.ConfirmationWindow;
 import org.okcrobot.scouter.ui.MainMenu;
 import org.okcrobot.scouter.ui.MatchWindow;
@@ -17,6 +20,7 @@ public class MunkeeScouter {
    * @param cheese command-line arguments
    */
   public static void main(String[] cheese) {
+    FileHandler fileHandler = new FileHandler();
     MainMenu mainMenu = new MainMenu();
     MatchWindow matchWindow = new MatchWindow();
     ConfirmationWindow confirmationWindow = new ConfirmationWindow();
@@ -35,7 +39,6 @@ public class MunkeeScouter {
         switch(matchWindow.display()) {
         case SAVING:
           
-          
           switch(confirmationWindow
               .setTeam(matchWindow.getTeamNumber())
               .setMatch(matchWindow.getMatchNumber())
@@ -45,7 +48,9 @@ public class MunkeeScouter {
               .display()) {
           case SAVE:
             
-            //TODO save here
+            JFileChooser fileChooser = new JFileChooser();
+            if(fileChooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION)
+              fileHandler.save(fileChooser.getSelectedFile(), confirmationWindow.serialize());
             
             break;
           default:
