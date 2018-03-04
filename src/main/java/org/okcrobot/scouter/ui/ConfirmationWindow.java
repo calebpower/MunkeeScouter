@@ -5,17 +5,20 @@ import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
-import org.okcrobot.scouter.model.RobotAction;
 import org.okcrobot.scouter.model.RobotActionList;
+import org.okcrobot.scouter.ui.MatchWindow.State;
 import org.okcrobot.scouter.ui.component.BorderedPanel;
 import org.okcrobot.scouter.ui.component.ConfirmationItem;
 import org.okcrobot.scouter.ui.component.DynamicGridBagConstraints;
@@ -25,6 +28,7 @@ import org.okcrobot.scouter.ui.component.NumberSpinnerPanel;
 public class ConfirmationWindow extends BasicWindow implements OptionListener {
   
   public static enum Action {
+    RESET("Reset"),
     CANCEL("Cancel"),
     SAVE("Save");
     
@@ -33,8 +37,15 @@ public class ConfirmationWindow extends BasicWindow implements OptionListener {
     private Action(String text) {
       button = new JButton(text);
     }
+    
+    static Action getValue(Object button) {
+      for(Action action : values())
+        if(button == action.button) return action;
+      return null;
+    }
   }
-
+  
+  private Action currentState = null;
   private JPanel itemsPanel = null;
   private JPanel northPanel = null;
   private JPanel centerPanel = null;
@@ -72,8 +83,16 @@ public class ConfirmationWindow extends BasicWindow implements OptionListener {
     itemsScrollPane.getViewport().setPreferredSize(itemsScrollPane.getSize());
     centerPanel.add(itemsScrollPane, constraints);
     
+    southPanel = new BorderedPanel();
+    ConfirmationWindowButtonListener buttonListener = new ConfirmationWindowButtonListener();
+    for(Action action : Action.values()) {
+      action.button.addActionListener(buttonListener);
+      southPanel.add(action.button);
+    }
+    
     getContentPane().add(northPanel, BorderLayout.NORTH);
     getContentPane().add(centerPanel, BorderLayout.CENTER);
+    getContentPane().add(southPanel, BorderLayout.SOUTH);
     
     confirmationItems = new ArrayList<>();
   }
@@ -114,9 +133,18 @@ public class ConfirmationWindow extends BasicWindow implements OptionListener {
     return this;
   }
   
-  public void display() {
+  public Action display() {
     redrawItems();
     setVisible(true);
+    setFocusable(true);
+    requestFocusInWindow();
+    while(currentState == null) {
+      try {
+        Thread.sleep(100L);
+      } catch(InterruptedException e) {}
+    }
+    setVisible(false);
+    return currentState;
   }
   
   private void redrawItems() {
@@ -140,21 +168,6 @@ public class ConfirmationWindow extends BasicWindow implements OptionListener {
         constraints.increaseGridY();
       }
       
-      /*
-      System.out.println("size = " + robotActions.size());
-      if(robotActions.size() > 0) {
-        robotActions.setCursor(0);
-        do {
-          ConfirmationItem confirmationItem = new ConfirmationItem(
-              robotActions.getAction().toString(),
-              robotActions.getTime()).setListener(this);
-          itemsPanel.add(confirmationItem, constraints);
-          confirmationItems.add(confirmationItem);
-          constraints.increaseGridY();
-        } while(robotActions.next() != null);
-      }
-      */
-      
       constraints.setWeightY(1);
       itemsPanel.add(new JLabel());
     }
@@ -166,15 +179,59 @@ public class ConfirmationWindow extends BasicWindow implements OptionListener {
   @Override public void onOptionUpdate(Component component) {
     for(int i = 0; i < confirmationItems.size(); i++) {
       if(confirmationItems.get(i).equals(component)) {
-        System.out.println("YEP");
         confirmationItems.get(i).setAlive(false);
         redrawItems();
         break;
       }
-      System.out.println("NOPE");
     }
   }
   
-  
+  private class ConfirmationWindowButtonListener implements ActionListener {
+    @Override public void actionPerformed(ActionEvent event) {
+      Action action = Action.getValue(event.getSource());
+      switch(action) {
+      case CANCEL:
+        
+        if(JOptionPane.showOptionDialog(null,
+            "Are you sure that you want to cancel?",
+            "Warning!",
+            JOptionPane.YES_NO_OPTION,
+            JOptionPane.WARNING_MESSAGE,
+            null, null, null) == 0) {
+          currentState = Action.CANCEL;
+        }
+        
+        break;
+      case RESET:
+        
+        if(JOptionPane.showOptionDialog(null,
+            "Are you sure you want to reset this window?",
+            "Warning!",
+            JOptionPane.YES_NO_OPTION,
+            JOptionPane.QUESTION_MESSAGE,
+            null, null, null) == 0) {
+          for(ConfirmationItem confirmationItem : confirmationItems)
+            confirmationItem.setAlive(true);
+          redrawItems();
+        }
+        
+        break;
+      case SAVE:
+        
+        if(JOptionPane.showOptionDialog(null,
+            "Are you sure that you are ready to save and exit?",
+            "Warning!",
+            JOptionPane.YES_NO_OPTION,
+            JOptionPane.QUESTION_MESSAGE,
+            null, null, null) == 0) {
+          currentState = Action.SAVE;
+        }
+        
+        break;
+      default:
+        break;
+      }
+    }
+  }
   
 }

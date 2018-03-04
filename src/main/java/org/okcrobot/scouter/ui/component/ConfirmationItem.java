@@ -21,10 +21,16 @@ public class ConfirmationItem extends JPanel {
   
   public ConfirmationItem(String action, long time) {
     setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
-    time /= 1000; //scrub milliseconds
+    System.out.println("TIME = " + time);
+    long minute = time / 60000L;
+    long second = time % 60000L / 1000;
+    long millisecond = time % 60000L - (second * 1000);
+    System.out.println(minute + " " + second + " " + millisecond);
+    
     add(new JLabel(action + " ("//add 0 for padding if necessary
-      + (time / 60 < 10 ? "0" : "") + (time / 60) + ":"
-      + (time % 60 < 10 ? "0" : "") + (time % 60) + ")"));
+      + (minute < 10 ? "0" : "") + minute + ":"
+      + (second < 10 ? "0" : "") + second + "."
+      + millisecond + ")"));
     add(Box.createHorizontalGlue());
     add(Box.createRigidArea(new Dimension(20, 0)));
     deleteButton = new JButton("X");
