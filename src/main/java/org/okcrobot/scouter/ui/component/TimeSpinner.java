@@ -7,15 +7,25 @@ import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
-import javax.swing.JSpinner.DefaultEditor;
 import javax.swing.SpinnerNumberModel;
 
+/**
+ * A collection of JSpinners that are used to change the time.
+ * 
+ * @author Caleb L. Power
+ */
 public class TimeSpinner extends JPanel {
+  private static final long serialVersionUID = -5843040542833095993L;
   
   private JSpinner minuteSpinner = null;
   private JSpinner secondSpinner = null;
   private JSpinner millisecondSpinner = null;
   
+  /**
+   * Overloaded constructor to set the time.
+   * 
+   * @param time match time in milliseconds
+   */
   public TimeSpinner(long time) {
     long minute = time / 60000L;
     long second = time % 60000L / 1000;
@@ -37,6 +47,12 @@ public class TimeSpinner extends JPanel {
     add(millisecondSpinner);
   }
   
+  /**
+   * Sets the time.
+   * 
+   * @param time the match time in milliseconds
+   * @return this TimeSpinner object
+   */
   public TimeSpinner setTime(long time) {
     long minute = time / 60000L;
     long second = time % 60000L / 1000;
@@ -49,6 +65,14 @@ public class TimeSpinner extends JPanel {
     return this;
   }
   
+  /**
+   * Generates an individual spinner.
+   * 
+   * @param value the initial value of the spinner
+   * @param minimum the minimum value that the spinner may show
+   * @param maximum the maximum value that the spinner may show
+   * @return the JSpinner that is generated
+   */
   private JSpinner generateSpinner(long value, int minimum, int maximum) {
     SpinnerNumberModel model = new SpinnerNumberModel(value, minimum, maximum, 1);
     JSpinner spinner = new JSpinner(model);
@@ -56,14 +80,29 @@ public class TimeSpinner extends JPanel {
     return spinner;
   }
   
+  /**
+   * Retrieves the minute value shown on the minute spinner.
+   * 
+   * @return integer representation of the minute spinner
+   */
   public int getMinute() {
     return ((Integer)minuteSpinner.getValue());
   }
   
+  /**
+   * Retrieves the second value shown on the second spinner.
+   * 
+   * @return integer representation of the second spinner
+   */
   public int getSecond() {
     return ((Integer)secondSpinner.getValue());
   }
   
+  /**
+   * Retrieves the millisecond value shown on the millisecond spinner.
+   * 
+   * @return integer representation of the millisecond spinner
+   */
   public int getMillisecond() {
     return ((Integer)millisecondSpinner.getValue());
   }

@@ -10,7 +10,6 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -19,26 +18,62 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
 import org.okcrobot.scouter.model.RobotActionList;
-import org.okcrobot.scouter.ui.MatchWindow.State;
 import org.okcrobot.scouter.ui.component.BorderedPanel;
 import org.okcrobot.scouter.ui.component.ConfirmationItem;
 import org.okcrobot.scouter.ui.component.DynamicGridBagConstraints;
 import org.okcrobot.scouter.ui.component.HelpfulTextbox;
 import org.okcrobot.scouter.ui.component.NumberSpinnerPanel;
 
+/**
+ * The confirmation window to be shown to make final edits.
+ * 
+ * @author Caleb L. Power
+ */
 public class ConfirmationWindow extends BasicWindow implements OptionListener {
+  private static final long serialVersionUID = -3378083047652029892L;
   
-  public static enum Action {
+  /**
+   * Indicates an action to be performed by the confirmation window.
+   * 
+   * @author Caleb L. Power
+   */
+  public static enum Action { //order matters skrubz
+    
+    /**
+     * Indicates that the user has elected to save the match data.
+     */
     SAVE("Save"),
+    
+    /**
+     * Indicates that the confirmation window is resetting a match to values
+     * made before the user modifies them.
+     */
     RESET("Reset"),
+    
+    /**
+     * Indicates that the user has elected to discard the match data.
+     */
     CANCEL("Cancel");
     
     private JButton button;
     
+    /**
+     * Overloaded constructor to set the button text.
+     * 
+     * @param text the text to be shown on the button
+     */
     private Action(String text) {
       button = new JButton(text);
     }
     
+    /**
+     * Retrieves the enumerable associated with a given object.
+     * This would generally be a JButton.
+     * 
+     * @param button the button
+     * @return the Action associated with the button object or <code>null</code>
+     *         if there is no Action associated with the given object
+     */
     static Action getValue(Object button) {
       for(Action action : values())
         if(button == action.button) return action;
@@ -59,6 +94,9 @@ public class ConfirmationWindow extends BasicWindow implements OptionListener {
   private NumberSpinnerPanel totalAlliancePointSpinner = null;
   private RobotActionList robotActions = null;
   
+  /**
+   * Null constructor to set up the confirmation window.
+   */
   public ConfirmationWindow() {
     super("MunkeeScouter Match Confirmation", 500, 600, 90, 90);
     
@@ -118,16 +156,37 @@ public class ConfirmationWindow extends BasicWindow implements OptionListener {
     confirmationItems = new ArrayList<>();
   }
   
+  /**
+   * Sets the team number.
+   * 
+   * @see MatchWindow#getTeamNumber()
+   * @param teamNumber the team number
+   * @return this ConfirmationWindow object
+   */
   public ConfirmationWindow setTeam(String teamNumber) {
     teamNumberTextbox.setValue(teamNumber);
     return this;
   }
   
+  /**
+   * Sets the match number.
+   * 
+   * @see MatchWindow#getMatchNumber()
+   * @param matchNumber the match number
+   * @return this ConfirmationWindow object
+   */
   public ConfirmationWindow setMatch(String matchNumber) {
     matchNumberTextbox.setValue(matchNumber);
     return this;
   }
   
+  /**
+   * Sets the robot actions.
+   * 
+   * @see MatchWindow#getRobotActions()
+   * @param robotActions the robot actions
+   * @return this ConfirmationWindow object
+   */
   public ConfirmationWindow setRobotActions(RobotActionList robotActions) {
     this.robotActions = robotActions;
     
@@ -144,16 +203,35 @@ public class ConfirmationWindow extends BasicWindow implements OptionListener {
     return this;
   }
   
+  /**
+   * Sets the comments.
+   * 
+   * @see MatchWindow#getComments()
+   * @param comments the text for the comment area
+   * @return this ConfirmationWindow object
+   */
   public ConfirmationWindow setComments(String comments) {
     commentArea.setText(comments);
     return this;
   }
   
+  /**
+   * Sets the total number of alliance points won during a match.
+   * 
+   * @see MatchWindow#getTotalAlliancePoints()
+   * @param alliancePoints the total number of alliance points that were won
+   * @return this ConfirmationWindow object
+   */
   public ConfirmationWindow setAlliancePoints(int alliancePoints) {
     totalAlliancePointSpinner.setValue(alliancePoints);
     return this;
   }
   
+  /**
+   * Displays the confirmation window.
+   * 
+   * @return Action enumerable denoting the final operation of the confirmation window
+   */
   public Action display() {
     currentState = null;
     redrawItems();
@@ -169,8 +247,10 @@ public class ConfirmationWindow extends BasicWindow implements OptionListener {
     return currentState;
   }
   
+  /**
+   * Redraws items in the center panel.
+   */
   private void redrawItems() {
-    
     for(Component component : getAllComponents(itemsPanel)) {
       if(component instanceof ConfirmationItem)
         itemsPanel.remove(component);
@@ -198,6 +278,9 @@ public class ConfirmationWindow extends BasicWindow implements OptionListener {
     centerPanel.repaint();
   }
   
+  /**
+   * {@inheritDoc}
+   */
   @Override public void onOptionUpdate(Component component) {
     for(int i = 0; i < confirmationItems.size(); i++) {
       if(confirmationItems.get(i).equals(component)) {
@@ -208,6 +291,11 @@ public class ConfirmationWindow extends BasicWindow implements OptionListener {
     }
   }
   
+  /**
+   * Action listener for buttons on the confirmation window.
+   * 
+   * @author Caleb L. Power
+   */
   private class ConfirmationWindowButtonListener implements ActionListener {
     @Override public void actionPerformed(ActionEvent event) {
       Action action = Action.getValue(event.getSource());
