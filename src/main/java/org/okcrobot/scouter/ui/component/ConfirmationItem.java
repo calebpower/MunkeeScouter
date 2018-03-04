@@ -17,20 +17,24 @@ public class ConfirmationItem extends JPanel {
   
   private boolean alive = true;
   private JButton deleteButton = null;
+  private long time = 0L;
   private OptionListener listener = null;
   private TimeSpinner timeSpinner = null;
   
   public ConfirmationItem(String action, long time) {
-    setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
-    
-    add(new JLabel(action));
+    this.time = time;
+    setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
+    JLabel actionLabel = new JLabel(action);
+    actionLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+    add(actionLabel);
     add(Box.createHorizontalGlue());
     add(Box.createRigidArea(new Dimension(20, 0)));
     timeSpinner = new TimeSpinner(time);
+    timeSpinner.setAlignmentX(Component.RIGHT_ALIGNMENT);
     add(timeSpinner);
-    add(Box.createHorizontalGlue());
     add(Box.createRigidArea(new Dimension(20, 0)));
     deleteButton = new JButton("X");
+    deleteButton.setAlignmentX(Component.RIGHT_ALIGNMENT);
     deleteButton.addActionListener(new ActionListener() {
       @Override public void actionPerformed(ActionEvent arg0) {
         if(listener != null) listener.onOptionUpdate(deleteButton);
@@ -50,6 +54,10 @@ public class ConfirmationItem extends JPanel {
   
   public void setAlive(boolean alive) {
     this.alive = alive;
+  }
+  
+  public void resetTime() {
+    timeSpinner.setTime(time);
   }
   
   public boolean isAlive() {

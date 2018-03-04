@@ -178,7 +178,7 @@ public class MatchWindow extends BasicWindow implements KeyListener, OptionListe
     
     southPanel = new JPanel();
     southPanel.setLayout(new GridBagLayout());
-    commentArea = new JTextArea(5, 20);
+    commentArea = new JTextArea("", 5, 20);
     commentArea.setLineWrap(true);
     BorderedPanel commentPanel = new BorderedPanel("Additional Comments");
     commentPanel.setLayout(new GridBagLayout());
@@ -221,7 +221,10 @@ public class MatchWindow extends BasicWindow implements KeyListener, OptionListe
     addKeyListener(keyMonitor);
     for(Component component : getAllComponents(this)) {
       component.addKeyListener(keyMonitor);
-      component.setFocusable(false);
+      if(component != teamNumberTextbox
+          && component != matchNumberTextbox
+          && component != commentArea)
+        component.setFocusable(false);
     }
     
     timer = new MatchTimer().addListener(this);
@@ -238,13 +241,17 @@ public class MatchWindow extends BasicWindow implements KeyListener, OptionListe
    */
   public State display() {
     actionTracker.clear();
-    currentState = State.VISIBLE;
+    teamNumberTextbox.setValue(null);
+    matchNumberTextbox.setValue(null);
+    totalAllianceSpinner.setValue(0);
+    commentArea.setText("");
     timer.stop();
     timer.reset();
     possibleActions.reset();
     resetButton.setEnabled(false);
     startButton.setEnabled(true);
     
+    currentState = State.VISIBLE;
     setVisible(true);
     setFocusable(true);
     requestFocusInWindow();
@@ -314,6 +321,22 @@ public class MatchWindow extends BasicWindow implements KeyListener, OptionListe
   
   public RobotActionList getRobotActions() {
     return actionTracker;
+  }
+  
+  public String getTeamNumber() {
+    return teamNumberTextbox.getValue();
+  }
+  
+  public String getMatchNumber() {
+    return matchNumberTextbox.getValue();
+  }
+  
+  public String getComments() {
+    return commentArea.getText();
+  }
+  
+  public int getTotalAlliancePoints() {
+    return totalAllianceSpinner.getValue();
   }
   
 }

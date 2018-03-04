@@ -59,7 +59,7 @@ public class HelpfulTextbox extends JTextField {
    */
   public HelpfulTextbox setValue(String value) {
     if(value == null) value = "";
-    setText(value == null ? hint : value);
+    setText(value.equals("") ? hint : value);
     return this;
   }
 }

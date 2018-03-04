@@ -34,11 +34,26 @@ public class MunkeeScouter {
         
         switch(matchWindow.display()) {
         case SAVING:
-          confirmationWindow
-              .setTeam("TEST TEAM")
-              .setMatch("TEST MATCH")
+          
+          
+          switch(confirmationWindow
+              .setTeam(matchWindow.getTeamNumber())
+              .setMatch(matchWindow.getMatchNumber())
+              .setComments(matchWindow.getComments())
+              .setAlliancePoints(matchWindow.getTotalAlliancePoints())
               .setRobotActions(matchWindow.getRobotActions())
-              .display();
+              .display()) {
+          case SAVE:
+            
+            //TODO save here
+            
+            break;
+          default:
+            break;
+          
+          }
+          
+          
           break;
         default:
           break;

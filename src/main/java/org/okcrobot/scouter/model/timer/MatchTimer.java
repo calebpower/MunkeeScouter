@@ -36,6 +36,7 @@ public class MatchTimer implements Runnable {
    * Starts the timer.
    */
   public void start() {
+    startTime = System.currentTimeMillis();
     running = true;
   }
   

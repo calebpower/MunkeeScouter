@@ -10,6 +10,7 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -28,9 +29,9 @@ import org.okcrobot.scouter.ui.component.NumberSpinnerPanel;
 public class ConfirmationWindow extends BasicWindow implements OptionListener {
   
   public static enum Action {
+    SAVE("Save"),
     RESET("Reset"),
-    CANCEL("Cancel"),
-    SAVE("Save");
+    CANCEL("Cancel");
     
     private JButton button;
     
@@ -81,13 +82,33 @@ public class ConfirmationWindow extends BasicWindow implements OptionListener {
     itemsPanel.setLayout(new GridBagLayout());
     itemsScrollPane = new JScrollPane(itemsPanel);
     itemsScrollPane.getViewport().setPreferredSize(itemsScrollPane.getSize());
-    centerPanel.add(itemsScrollPane, constraints);
+    centerPanel.add(itemsScrollPane, constraints.setGridHeight(4));
+    commentArea = new JTextArea();
+    centerPanel.add(commentArea, constraints.setGridHeight(1).setGridY(4));
+
+    southPanel = new JPanel();
+    southPanel.setLayout(new GridBagLayout());
+    commentArea = new JTextArea("", 5, 20);
+    commentArea.setLineWrap(true);
+    BorderedPanel commentPanel = new BorderedPanel("Additional Comments");
+    commentPanel.setLayout(new GridBagLayout());
+    constraints = new DynamicGridBagConstraints()
+        .setFill(GridBagConstraints.BOTH)
+        .setWeightX(1)
+        .setWeightY(1);
+    commentPanel.add(new JScrollPane(commentArea), constraints);
     
-    southPanel = new BorderedPanel();
+    totalAlliancePointSpinner = new NumberSpinnerPanel("Total Alliance Points", 0, null);
+    JPanel totalAlliancePanel = new JPanel();
+    totalAlliancePanel.add(totalAlliancePointSpinner);
+    southPanel.add(commentPanel, constraints);
+    southPanel.add(totalAlliancePanel, constraints.increaseGridY());
     ConfirmationWindowButtonListener buttonListener = new ConfirmationWindowButtonListener();
+    constraints.increaseGridX().setGridY(0).setGridHeight(1);
     for(Action action : Action.values()) {
       action.button.addActionListener(buttonListener);
-      southPanel.add(action.button);
+      southPanel.add(action.button, constraints);
+      constraints.increaseGridY();
     }
     
     getContentPane().add(northPanel, BorderLayout.NORTH);
@@ -134,6 +155,7 @@ public class ConfirmationWindow extends BasicWindow implements OptionListener {
   }
   
   public Action display() {
+    currentState = null;
     redrawItems();
     setVisible(true);
     setFocusable(true);
@@ -210,8 +232,10 @@ public class ConfirmationWindow extends BasicWindow implements OptionListener {
             JOptionPane.YES_NO_OPTION,
             JOptionPane.QUESTION_MESSAGE,
             null, null, null) == 0) {
-          for(ConfirmationItem confirmationItem : confirmationItems)
+          for(ConfirmationItem confirmationItem : confirmationItems) {
+            confirmationItem.resetTime();
             confirmationItem.setAlive(true);
+          }
           redrawItems();
         }
         
